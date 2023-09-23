@@ -1,6 +1,7 @@
 package com.example.account.controller;
 
 import com.example.account.DA.*;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,5 +57,13 @@ public class UserController {
     @DeleteMapping("deleteUser/{id}")
     public void deleteUser(@PathVariable Integer id) {
         usersService.delete(id);
+    }
+
+//    services inside swagger
+
+    @Operation(summary = "Get string")
+    @RequestMapping(value = "/sayHello", method = RequestMethod.POST)
+    public String sayHello() {
+        return "Hello! I am samin...!";
     }
 }
