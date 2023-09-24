@@ -1,7 +1,8 @@
-package com.example.account.controller;
+package com.example.account.api.controller;
 
-import com.example.account.DA.*;
+import com.example.account.model.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,13 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "accountsecapi")
 public class UserController {
 
     @Autowired
     private UsersService usersService;
 
+    //---------------Create CRUD RESTFul Services------------------
     //curl http://localhost:9091/api/getAllUsers
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers() {
@@ -59,11 +62,11 @@ public class UserController {
         usersService.delete(id);
     }
 
-//    services inside swagger
-
+    //------------HelloWorld Swagger-------------
     @Operation(summary = "Get string")
     @RequestMapping(value = "/sayHello", method = RequestMethod.POST)
     public String sayHello() {
-        return "Hello! I am samin...!";
+        return "Hello Swagger. I am samin..!";
     }
+
 }

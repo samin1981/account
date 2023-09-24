@@ -1,6 +1,6 @@
 package com.example.account.service;
 
-import com.example.account.DA.*;
+import com.example.account.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
