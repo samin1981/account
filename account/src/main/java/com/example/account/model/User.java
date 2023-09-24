@@ -1,38 +1,21 @@
 package com.example.account.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
+@Data
 public class User {
 
-    private Long id;
-    private String name;
-    private String nationalCode;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long getId() {
-        return id;
-    }
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column
+    private String name;
 
-    public String getNationalCode() {
-        return nationalCode;
-    }
-
-    public void setNationalCode(String nationalCode) {
-        this.nationalCode = nationalCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Column
+    private String nationalCode;
 }
