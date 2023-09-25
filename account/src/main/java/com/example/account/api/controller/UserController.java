@@ -14,7 +14,6 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api")
-@SecurityRequirement(name = "accountsecapi")
 public class UserController {
 
     @Autowired
