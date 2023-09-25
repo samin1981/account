@@ -9,22 +9,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/**", "/api/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic();
+  @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+      auth.inMemoryAuthentication()
+              .withUser("sa")
+              .password(passwordEncoder().encode("samin"))
+              .authorities("ADMIN");
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("accountsec")
-                .password(passwordEncoder().encode("accountsec"))
-                .authorities("ADMIN");
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/api").authenticated()
+                .antMatchers("/api/**").permitAll()
+                .anyRequest().authenticated() // Any resources not mentioned above needs to be authenticated
+                .and()
+                .httpBasic();
     }
 
     @Bean
