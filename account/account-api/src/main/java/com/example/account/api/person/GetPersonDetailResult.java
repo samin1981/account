@@ -1,6 +1,6 @@
 package com.example.account.api.person;
 
-public class Person {
+public class GetPersonDetailResult {
 
     private Integer id;
     private String personName;
@@ -37,15 +37,5 @@ public class Person {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", personName='" + personName + '\'' +
-                ", nationalCode='" + nationalCode + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
     }
 }

@@ -1,6 +1,11 @@
 package com.example.account.service;
 
+import com.example.account.api.RemovePersonRequest;
 import com.example.account.api.person.AddPersonRequest;
+import com.example.account.api.person.GetAllPersonsResult;
+import com.example.account.api.person.GetPersonRequest;
+import com.example.account.api.person.GetPersonResult;
+import com.example.account.builder.PersonBuilder;
 import com.example.account.domain.Person;
 import com.example.account.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,39 +18,48 @@ import java.util.stream.Collectors;
 public class PersonService {
 
     @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    public com.example.account.api.person.GetAllPersonsResult getAllPersons() {
+    public PersonService(PersonRepository personRepository) {
+        this.personRepository = personRepository;
+    }
 
-        com.example.account.api.person.GetAllPersonsResult result = new com.example.account.api.person.GetAllPersonsResult();
-        List<com.example.account.api.person.Person> persons = personRepository.findAll().stream().map(this::mapServiceUserToApiUser).collect(Collectors.toList());
+    public GetAllPersonsResult getAllPersons() {
+
+        GetAllPersonsResult result = new GetAllPersonsResult();
+        List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAll().stream().map(this::personDetailMapper).collect(Collectors.toList());
         result.setItems(persons);
 
         return result;
     }
 
-  /*  public Person getUser(Integer id) {
-        Person user = mapServiceUserToApiUser(userRepository.getById(id));
-        return user;
+    public GetPersonResult getPerson(GetPersonRequest request) {
+
+        GetPersonResult items = new GetPersonResult();
+        List<Person> persons = personRepository.findByPersonName(request.getPersonName());
+        items.setItems(persons.stream().map(this::personDetailMapper).collect(Collectors.toList()));
+
+        return items;
     }
 
-    public void addUser(AddUserRequest request) {
-        Person user = mapApiUserToServiceUser(request);
-        userRepository.save(user);
+    public void addPerson(AddPersonRequest request) {
+
+        Person person = PersonBuilder.getInstance()
+                .personName(request.getPersonName())
+                .phoneNumber(request.getPhoneNumber())
+                .nationalCode(request.getNationalCode())
+                .build();
+
+        personRepository.save(person);
     }
 
-    public void updateUser(UpdateUserRequest request) {
-        Person user = userRepository.getByIdAndPersonName(request.getId(), request.getUserName());
-        userRepository.updatePersonByName(user.getPersonName(), request.getNationalCode(), request.getPhoneNumber());
+    public void removePerson(RemovePersonRequest request) {
+        Person person = personRepository.findByNationalCode(request.getNationalCode()).orElseThrow();
+        personRepository.delete(person);
     }
 
-    public void removeUser(Integer id) {
-        Person user = userRepository.getById(id);
-        userRepository.delete(user);
-    }
-*/
-    private com.example.account.api.person.Person mapServiceUserToApiUser(com.example.account.domain.Person source) {
-        com.example.account.api.person.Person destination = new com.example.account.api.person.Person();
+    private com.example.account.api.person.GetPersonDetailResult personDetailMapper(Person source) {
+        com.example.account.api.person.GetPersonDetailResult destination = new com.example.account.api.person.GetPersonDetailResult();
 
         destination.setId(source.getId());
         destination.setPersonName(source.getPersonName());
@@ -54,16 +68,4 @@ public class PersonService {
 
         return destination;
     }
-
-    private Person mapApiUserToServiceUser(AddPersonRequest source) {
-        Person destination = new Person();
-
-        destination.setPersonName(source.getPersonName());
-        destination.setNationalCode(source.getNationalCode());
-        destination.setPhoneNumber(source.getPhoneNumber());
-
-        return destination;
-    }
-
-
 }

@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/api").authenticated()
-                .antMatchers("/account/","/api/**").permitAll()
+                .antMatchers("/api/**").permitAll()
                 .anyRequest().authenticated() // Any resources not mentioned above needs to be authenticated
                 .and().cors().disable()
                 .csrf().disable()

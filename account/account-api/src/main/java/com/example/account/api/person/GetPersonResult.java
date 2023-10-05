@@ -3,7 +3,8 @@ package com.example.account.api.person;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetAllPersonsResult {
+public class GetPersonResult {
+
     private List<GetPersonDetailResult> items = new ArrayList<>();
 
     public List<GetPersonDetailResult> getItems() {
@@ -16,9 +17,8 @@ public class GetAllPersonsResult {
 
     @Override
     public String toString() {
-        return "GetAllPersonsResult{" +
+        return "GetPersonResult{" +
                 "items=" + items +
                 '}';
     }
 }
-
