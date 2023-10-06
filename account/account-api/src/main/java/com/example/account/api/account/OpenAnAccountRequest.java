@@ -1,9 +1,8 @@
-package com.example.account.api;
+package com.example.account.api.account;
 
 import javax.validation.constraints.Pattern;
 
-public class RemovePersonRequest {
-
+public class OpenAnAccountRequest {
     @Pattern(regexp = "\\d{10}")
     private String nationalCode;
 
@@ -17,7 +16,7 @@ public class RemovePersonRequest {
 
     @Override
     public String toString() {
-        return "RemovePersonRequest{" +
+        return "OpenAnAccountRequest{" +
                 "nationalCode='" + nationalCode + '\'' +
                 '}';
     }

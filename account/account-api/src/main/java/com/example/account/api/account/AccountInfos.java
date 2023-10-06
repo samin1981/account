@@ -1,9 +1,8 @@
 package com.example.account.api.account;
 
-public class AccountInfo {
-    private Integer id;
+public class AccountInfos {
 
-//    @AccountNumber
+    private Integer id;
     private String accountNumber;
 
     public Integer getId() {
@@ -24,7 +23,7 @@ public class AccountInfo {
 
     @Override
     public String toString() {
-        return "AccountInfo{" +
+        return "AccountInfos{" +
                 "id=" + id +
                 ", accountNumber='" + accountNumber + '\'' +
                 '}';

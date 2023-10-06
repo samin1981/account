@@ -22,9 +22,9 @@ public class GetAccountInfoDetailResult {
 
     @Override
     public String toString() {
-        return "GetAccountDetailResult{" +
-                "id=" + id +
-                ", accountNumber='" + accountNumber + '\'' +
+        return "GetAccountInfoDetailResult{" +
+                "id='" + id + '\'' +
+                "accountNumber='" + accountNumber + '\'' +
                 '}';
     }
 }

@@ -1,11 +1,13 @@
 package com.example.account.service;
 
-import com.example.account.api.RemovePersonRequest;
+import com.example.account.api.person.RemovePersonRequest;
+import com.example.account.api.account.AccountInfos;
 import com.example.account.api.person.AddPersonRequest;
 import com.example.account.api.person.GetAllPersonsResult;
 import com.example.account.api.person.GetPersonRequest;
 import com.example.account.api.person.GetPersonResult;
 import com.example.account.builder.PersonBuilder;
+import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.repository.PersonRepository;
 import common.AccountError;
@@ -16,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,9 +52,8 @@ public class PersonService {
 
     public GetPersonResult getPerson(GetPersonRequest request) {
 
-        GetPersonResult result = new GetPersonResult();
-        List<Person> persons = personRepository.findByPersonName(request.getPersonName());
-        if (persons.isEmpty() && persons.size() == 0) {
+        Person person = personRepository.findByNationalCode(request.getNationalCode()).orElseThrow();
+        if (person == null) {
             try {
                 logger.log(Level.INFO, "person not found.");
                 throw new AccountError(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
@@ -59,7 +61,7 @@ public class PersonService {
                 accountError.printStackTrace();
             }
         }
-        result.setItems(persons.stream().map(this::personDetailMapper).collect(Collectors.toList()));
+        GetPersonResult result = personMapper(person);
 
         return result;
     }
@@ -70,6 +72,7 @@ public class PersonService {
                 .personName(request.getPersonName())
                 .phoneNumber(request.getPhoneNumber())
                 .nationalCode(request.getNationalCode())
+                .accountInfos(null)
                 .build();
 
         personRepository.save(person);
@@ -87,7 +90,32 @@ public class PersonService {
         destination.setPersonName(source.getPersonName());
         destination.setNationalCode(source.getNationalCode());
         destination.setPhoneNumber(source.getPhoneNumber());
+        destination.setAccountInfos(fillAccountInfo(source.getAccountInfos()));
 
         return destination;
+    }
+
+    private com.example.account.api.person.GetPersonResult personMapper(Person source) {
+        com.example.account.api.person.GetPersonResult destination = new com.example.account.api.person.GetPersonResult();
+
+        destination.setId(source.getId());
+        destination.setPersonName(source.getPersonName());
+        destination.setNationalCode(source.getNationalCode());
+        destination.setPhoneNumber(source.getPhoneNumber());
+        destination.setAccountInfos(fillAccountInfo(source.getAccountInfos()));
+
+        return destination;
+    }
+
+    private List<com.example.account.api.account.AccountInfos> fillAccountInfo(List<AccountInfo> accountInfos) {
+
+        List<com.example.account.api.account.AccountInfos> accountInfosList = new ArrayList<>();
+        for (AccountInfo source : accountInfos) {
+            com.example.account.api.account.AccountInfos accountInfo = new AccountInfos();
+            accountInfo.setId(source.getId());
+            accountInfo.setAccountNumber(source.getAccountNumber());
+            accountInfosList.add(accountInfo);
+        }
+        return accountInfosList;
     }
 }

@@ -10,7 +10,5 @@ import java.util.Optional;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Integer> {
 
-    List<Person> findByPersonName(String personName);
-
     Optional<Person> findByNationalCode(String nationalCode);
 }

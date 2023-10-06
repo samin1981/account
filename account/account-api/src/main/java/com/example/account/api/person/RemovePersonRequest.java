@@ -1,7 +1,10 @@
 package com.example.account.api.person;
 
-public class GetPersonRequest {
+import javax.validation.constraints.Pattern;
 
+public class RemovePersonRequest {
+
+    @Pattern(regexp = "\\d{10}")
     private String nationalCode;
 
     public String getNationalCode() {
@@ -14,7 +17,7 @@ public class GetPersonRequest {
 
     @Override
     public String toString() {
-        return "GetPersonRequest{" +
+        return "RemovePersonRequest{" +
                 "nationalCode='" + nationalCode + '\'' +
                 '}';
     }

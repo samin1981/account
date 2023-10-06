@@ -1,4 +1,4 @@
-package com.example.account.api;
+package com.example.account.api.person;
 
 public class AddPersonResult {
 

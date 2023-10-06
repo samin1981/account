@@ -1,24 +1,65 @@
 package com.example.account.api.person;
 
-import java.util.ArrayList;
+import com.example.account.api.account.AccountInfos;
+
 import java.util.List;
 
 public class GetPersonResult {
 
-    private List<GetPersonDetailResult> items = new ArrayList<>();
+    private Integer id;
+    private String personName;
+    private String nationalCode;
+    private String phoneNumber;
+    private List<AccountInfos> accountInfos;
 
-    public List<GetPersonDetailResult> getItems() {
-        return items;
+    public Integer getId() {
+        return id;
     }
 
-    public void setItems(List<GetPersonDetailResult> items) {
-        this.items = items;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public String getNationalCode() {
+        return nationalCode;
+    }
+
+    public void setNationalCode(String nationalCode) {
+        this.nationalCode = nationalCode;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public List<AccountInfos> getAccountInfos() {
+        return accountInfos;
+    }
+
+    public void setAccountInfos(List<AccountInfos> accountInfos) {
+        this.accountInfos = accountInfos;
     }
 
     @Override
     public String toString() {
         return "GetPersonResult{" +
-                "items=" + items +
+                "id=" + id +
+                ", personName='" + personName + '\'' +
+                ", nationalCode='" + nationalCode + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", accountInfos=" + accountInfos +
                 '}';
     }
 }

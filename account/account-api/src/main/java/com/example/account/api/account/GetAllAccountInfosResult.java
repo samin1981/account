@@ -16,7 +16,7 @@ public class GetAllAccountInfosResult {
 
     @Override
     public String toString() {
-        return "GetAccountDetailResult{" +
+        return "GetAllAccountInfosResult{" +
                 "items=" + items +
                 '}';
     }
