@@ -1,8 +1,9 @@
 package com.example.account.service;
 
-import com.example.account.api.account.*;
+import com.example.account.api.account.GetAccountInfoDetailResult;
+import com.example.account.api.account.GetAllAccountInfosResult;
+import com.example.account.api.account.OpenAnAccountRequest;
 import com.example.account.builder.AccountInfoBuilder;
-import com.example.account.builder.PersonBuilder;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.repository.AccountInfoRepository;

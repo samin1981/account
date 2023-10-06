@@ -1,11 +1,7 @@
 package com.example.account.service;
 
-import com.example.account.api.person.RemovePersonRequest;
 import com.example.account.api.account.AccountInfos;
-import com.example.account.api.person.AddPersonRequest;
-import com.example.account.api.person.GetAllPersonsResult;
-import com.example.account.api.person.GetPersonRequest;
-import com.example.account.api.person.GetPersonResult;
+import com.example.account.api.person.*;
 import com.example.account.builder.PersonBuilder;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
