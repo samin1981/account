@@ -8,6 +8,11 @@ import com.example.account.api.person.GetPersonResult;
 import com.example.account.builder.PersonBuilder;
 import com.example.account.domain.Person;
 import com.example.account.repository.PersonRepository;
+import common.AccountError;
+import common.AccountErrorsStatic;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
+    private static final Logger logger = LogManager.getLogger(PersonService.class);
 
     @Autowired
     private final PersonRepository personRepository;
@@ -28,6 +34,14 @@ public class PersonService {
 
         GetAllPersonsResult result = new GetAllPersonsResult();
         List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAll().stream().map(this::personDetailMapper).collect(Collectors.toList());
+        if (persons.isEmpty() && persons.size() == 0) {
+            try {
+                logger.log(Level.INFO, "person not found.");
+                throw new AccountError(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
+            } catch (AccountError accountError) {
+                accountError.printStackTrace();
+            }
+        }
         result.setItems(persons);
 
         return result;
@@ -35,11 +49,19 @@ public class PersonService {
 
     public GetPersonResult getPerson(GetPersonRequest request) {
 
-        GetPersonResult items = new GetPersonResult();
+        GetPersonResult result = new GetPersonResult();
         List<Person> persons = personRepository.findByPersonName(request.getPersonName());
-        items.setItems(persons.stream().map(this::personDetailMapper).collect(Collectors.toList()));
+        if (persons.isEmpty() && persons.size() == 0) {
+            try {
+                logger.log(Level.INFO, "person not found.");
+                throw new AccountError(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
+            } catch (AccountError accountError) {
+                accountError.printStackTrace();
+            }
+        }
+        result.setItems(persons.stream().map(this::personDetailMapper).collect(Collectors.toList()));
 
-        return items;
+        return result;
     }
 
     public void addPerson(AddPersonRequest request) {

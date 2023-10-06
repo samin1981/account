@@ -1,7 +1,7 @@
 package com.example.account.api.impl;
 
 import com.example.account.api.AddPersonResult;
-import com.example.account.api.PersonAPI;
+import com.example.account.api.base.AccAPI;
 import com.example.account.api.RemovePersonRequest;
 import com.example.account.api.RemovePersonResult;
 import com.example.account.api.person.*;
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
-public class PersonWS implements PersonAPI {
+@RequestMapping("/accApi")
+public class AccWS implements AccAPI {
 
     @Autowired
     private final PersonService personService;
 
-    public PersonWS(PersonService personService) {
+    public AccWS(PersonService personService) {
         this.personService = personService;
     }
 
