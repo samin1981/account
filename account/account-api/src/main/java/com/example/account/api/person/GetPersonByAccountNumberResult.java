@@ -1,18 +1,26 @@
 package com.example.account.api.person;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import com.example.account.api.account.AccountInfo;
 
-public class AddPersonRequest {
+public class GetPersonByAccountNumberResult {
+
+    private Integer id;
 
     private String personName;
 
-    @NotNull/*(message = "nationalCode may not be null.")*/
-    @Pattern(regexp = "\\d{10}")
     private String nationalCode;
 
-    @Pattern(regexp = "\\d{11}")
     private String phoneNumber;
+
+    private AccountInfo accountInfo;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getPersonName() {
         return personName;
@@ -38,12 +46,11 @@ public class AddPersonRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    @Override
-    public String toString() {
-        return "AddPersonRequest{" +
-                "personName='" + personName + '\'' +
-                ", nationalCode='" + nationalCode + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
+    public AccountInfo getAccountInfo() {
+        return accountInfo;
+    }
+
+    public void setAccountInfo(AccountInfo accountInfo) {
+        this.accountInfo = accountInfo;
     }
 }

@@ -1,8 +1,6 @@
 package com.example.account.api.person;
 
-import com.example.account.api.account.AccountInfos;
-
-import java.util.List;
+import com.example.account.api.account.AccountInfo;
 
 public class GetPersonDetailResult {
 
@@ -10,7 +8,7 @@ public class GetPersonDetailResult {
     private String personName;
     private String nationalCode;
     private String phoneNumber;
-    private List<AccountInfos> accountInfos;
+    private AccountInfo accountInfo;
 
     public Integer getId() {
         return id;
@@ -44,11 +42,11 @@ public class GetPersonDetailResult {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<AccountInfos> getAccountInfos() {
-        return accountInfos;
+    public AccountInfo getAccountInfo() {
+        return accountInfo;
     }
 
-    public void setAccountInfos(List<AccountInfos> accountInfos) {
-        this.accountInfos = accountInfos;
+    public void setAccountInfo(AccountInfo accountInfo) {
+        this.accountInfo = accountInfo;
     }
 }

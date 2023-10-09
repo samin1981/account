@@ -3,17 +3,16 @@ package com.example.account.builder;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 
-import java.util.List;
-
 public class PersonBuilder {
 
     private String personName;
     private String nationalCode;
     private String phoneNumber;
-    private List<AccountInfo> accountInfos;
+    private AccountInfo accountInfo;
 
     private PersonBuilder() {
     }
+
     public static PersonBuilder getInstance() {
         return new PersonBuilder();
     }
@@ -33,8 +32,8 @@ public class PersonBuilder {
         return this;
     }
 
-    public PersonBuilder accountInfos(List<AccountInfo> accountInfos) {
-        this.accountInfos = accountInfos;
+    public PersonBuilder accountInfo(AccountInfo accountInfo) {
+        this.accountInfo = accountInfo;
         return this;
     }
 
@@ -43,7 +42,7 @@ public class PersonBuilder {
         person.setPersonName(personName);
         person.setPhoneNumber(phoneNumber);
         person.setNationalCode(nationalCode);
-        person.setAccountInfos(accountInfos);
+        person.setAccountInfo(accountInfo);
 
         return person;
     }

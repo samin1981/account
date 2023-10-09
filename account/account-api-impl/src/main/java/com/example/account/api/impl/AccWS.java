@@ -1,16 +1,15 @@
 package com.example.account.api.impl;
 
-import com.example.account.api.person.AddPersonResult;
-import com.example.account.api.account.GetAllAccountInfosRequest;
-import com.example.account.api.account.GetAllAccountInfosResult;
-import com.example.account.api.account.OpenAnAccountRequest;
-import com.example.account.api.account.OpenAnAccountResult;
+import com.example.account.api.account.*;
 import com.example.account.api.base.AccAPI;
-import com.example.account.api.person.RemovePersonRequest;
-import com.example.account.api.person.RemovePersonResult;
 import com.example.account.api.person.*;
+import com.example.account.api.transaction.GetAllTransactionsRequest;
+import com.example.account.api.transaction.GetAllTransactionsResult;
+import com.example.account.api.transaction.GetTransactionsByAccountNumberRequest;
+import com.example.account.api.transaction.GetTransactionsByAccountNumberResult;
 import com.example.account.service.AccountInfoService;
 import com.example.account.service.PersonService;
+import com.example.account.service.TransactionService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,11 +21,14 @@ public class AccWS implements AccAPI {
 
     private final PersonService personService;
     private final AccountInfoService accountInfoService;
+    private final TransactionService transactionService;
 
     public AccWS(PersonService personService,
-                 AccountInfoService accountInfoService) {
+                 AccountInfoService accountInfoService,
+                 TransactionService transactionService) {
         this.personService = personService;
         this.accountInfoService = accountInfoService;
+        this.transactionService = transactionService;
     }
 
     @Override
@@ -35,8 +37,8 @@ public class AccWS implements AccAPI {
     }
 
     @Override
-    public GetPersonResult getPerson(GetPersonRequest request) {
-        return personService.getPerson(request);
+    public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
+        return personService.getPersonByNationalCode(request);
     }
 
     @Override
@@ -46,20 +48,55 @@ public class AccWS implements AccAPI {
     }
 
     @Override
-    public RemovePersonResult removePerson(@Valid RemovePersonRequest request) {
-        personService.removePerson(request);
-        return new RemovePersonResult(true);
+    public RemovePersonByNationalCodeResult removePersonByNationalCode(RemovePersonByNationalCodeRequest request) {
+        personService.removePersonByNationalCode(request);
+        return new RemovePersonByNationalCodeResult(true);
     }
 
     @Override
-    public OpenAnAccountResult openAnAccount(@Valid OpenAnAccountRequest request) {
+    public GetPersonByAccountNumberResult getPersonByAccountNumber(GetPersonByAccountNumberRequest request) {
+        return personService.getPersonByAccountNumber(request);
+    }
+
+    @Override
+    public OpenAnAccountResult openAnAccount(OpenAnAccountRequest request) {
         accountInfoService.openAnAccount(request);
         return new OpenAnAccountResult(true);
     }
 
     @Override
-    public GetAllAccountInfosResult getAllAccountInfos(@Valid GetAllAccountInfosRequest request) {
+    public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
         return accountInfoService.getAllAccountInfos();
+    }
+
+    @Override
+    public GetAccountInfoByAccountNumberResult getAccountInfoByAccountNumber(GetAccountInfoByAccountNumberRequest request) {
+        return accountInfoService.getAccountInfoByAccountNumber(request);
+    }
+
+    @Override
+    public GetAllTransactionsResult getAllTransactions(GetAllTransactionsRequest request) {
+        return transactionService.getAllTransactions();
+    }
+
+    @Override
+    public GetTransactionsByAccountNumberResult getTransactionsByAccountNumber(GetTransactionsByAccountNumberRequest request) {
+        return transactionService.getTransactionByAccountNumber(request);
+    }
+
+    @Override
+    public InternalTransferResult internalTransfer(InternalTransferRequest request) {
+        return accountInfoService.internalTransfer(request);
+    }
+
+    @Override
+    public CashDepositResult cashDeposit(CashDepositRequest request) {
+        return accountInfoService.cashDeposit(request);
+    }
+
+    @Override
+    public CashWithdrawResult cashWithdraw(CashWithdrawRequest request) {
+        return accountInfoService.cashWithdraw(request);
     }
 
 

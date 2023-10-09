@@ -1,16 +1,14 @@
 package com.example.account.api.person;
 
-import com.example.account.api.account.AccountInfos;
+import com.example.account.api.account.AccountInfo;
 
-import java.util.List;
-
-public class GetPersonResult {
+public class GetPersonByNationalCodeResult {
 
     private Integer id;
     private String personName;
     private String nationalCode;
     private String phoneNumber;
-    private List<AccountInfos> accountInfos;
+    private AccountInfo accountInfo;
 
     public Integer getId() {
         return id;
@@ -44,22 +42,22 @@ public class GetPersonResult {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<AccountInfos> getAccountInfos() {
-        return accountInfos;
+    public AccountInfo getAccountInfo() {
+        return accountInfo;
     }
 
-    public void setAccountInfos(List<AccountInfos> accountInfos) {
-        this.accountInfos = accountInfos;
+    public void setAccountInfo(AccountInfo accountInfo) {
+        this.accountInfo = accountInfo;
     }
 
     @Override
     public String toString() {
-        return "GetPersonResult{" +
+        return "GetPersonByNationalCodeResult{" +
                 "id=" + id +
                 ", personName='" + personName + '\'' +
                 ", nationalCode='" + nationalCode + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", accountInfos=" + accountInfos +
+                ", accountInfo=" + accountInfo +
                 '}';
     }
 }

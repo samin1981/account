@@ -1,6 +1,6 @@
 package com.example.account.service;
 
-import com.example.account.api.account.AccountInfos;
+import com.example.account.api.TransferType;
 import com.example.account.api.person.*;
 import com.example.account.builder.PersonBuilder;
 import com.example.account.domain.AccountInfo;
@@ -13,12 +13,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(rollbackFor = Throwable.class)
 public class PersonService {
     private static final Logger logger = LogManager.getLogger(PersonService.class);
 
@@ -46,18 +47,18 @@ public class PersonService {
         return result;
     }
 
-    public GetPersonResult getPerson(GetPersonRequest request) {
+    public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
 
-        Person person = personRepository.findByNationalCode(request.getNationalCode()).orElseThrow();
+        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
         if (person == null) {
             try {
-                logger.log(Level.INFO, "person not found.");
+                logger.log(Level.INFO, "person ba in code melli yaft nashod.");
                 throw new AccountError(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
             } catch (AccountError accountError) {
                 accountError.printStackTrace();
             }
         }
-        GetPersonResult result = personMapper(person);
+        GetPersonByNationalCodeResult result = personMapper(person);
 
         return result;
     }
@@ -68,15 +69,28 @@ public class PersonService {
                 .personName(request.getPersonName())
                 .phoneNumber(request.getPhoneNumber())
                 .nationalCode(request.getNationalCode())
-                .accountInfos(null)
+                .accountInfo(null)
                 .build();
 
         personRepository.save(person);
     }
 
-    public void removePerson(RemovePersonRequest request) {
-        Person person = personRepository.findByNationalCode(request.getNationalCode()).orElseThrow();
+    public void removePersonByNationalCode(RemovePersonByNationalCodeRequest request) {
+        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
+        if (person == null) {
+            //person yaft nashod
+        }
         personRepository.delete(person);
+    }
+
+    public GetPersonByAccountNumberResult getPersonByAccountNumber(GetPersonByAccountNumberRequest request) {
+        Person person = personRepository.findPersonByAccountInfo(request.getAccountNumber());
+        if (person == null) {
+            // shakhsi ba in shomare hesab yaft nashod
+        }
+        GetPersonByAccountNumberResult result = personByAccountNumberMapper(person);
+
+        return result;
     }
 
     private com.example.account.api.person.GetPersonDetailResult personDetailMapper(Person source) {
@@ -86,32 +100,52 @@ public class PersonService {
         destination.setPersonName(source.getPersonName());
         destination.setNationalCode(source.getNationalCode());
         destination.setPhoneNumber(source.getPhoneNumber());
-        destination.setAccountInfos(fillAccountInfo(source.getAccountInfos()));
+        if (source.getAccountInfo() != null) {
+            destination.setAccountInfo(fillAccountInfo(source.getAccountInfo()));
+        }
 
         return destination;
     }
 
-    private com.example.account.api.person.GetPersonResult personMapper(Person source) {
-        com.example.account.api.person.GetPersonResult destination = new com.example.account.api.person.GetPersonResult();
+    private com.example.account.api.person.GetPersonByAccountNumberResult personByAccountNumberMapper(Person source) {
+        com.example.account.api.person.GetPersonByAccountNumberResult destination = new com.example.account.api.person.GetPersonByAccountNumberResult();
 
         destination.setId(source.getId());
         destination.setPersonName(source.getPersonName());
         destination.setNationalCode(source.getNationalCode());
         destination.setPhoneNumber(source.getPhoneNumber());
-        destination.setAccountInfos(fillAccountInfo(source.getAccountInfos()));
+        destination.setAccountInfo(fillAccountInfo(source.getAccountInfo()));
 
         return destination;
     }
 
-    private List<com.example.account.api.account.AccountInfos> fillAccountInfo(List<AccountInfo> accountInfos) {
+    private GetPersonByNationalCodeResult personMapper(Person source) {
+        GetPersonByNationalCodeResult destination = new GetPersonByNationalCodeResult();
 
-        List<com.example.account.api.account.AccountInfos> accountInfosList = new ArrayList<>();
-        for (AccountInfo source : accountInfos) {
-            com.example.account.api.account.AccountInfos accountInfo = new AccountInfos();
-            accountInfo.setId(source.getId());
-            accountInfo.setAccountNumber(source.getAccountNumber());
-            accountInfosList.add(accountInfo);
+        destination.setId(source.getId());
+        destination.setPersonName(source.getPersonName());
+        destination.setNationalCode(source.getNationalCode());
+        destination.setPhoneNumber(source.getPhoneNumber());
+        if (source.getAccountInfo() != null) {
+            destination.setAccountInfo(fillAccountInfo(source.getAccountInfo()));
         }
-        return accountInfosList;
+
+        return destination;
     }
+
+    private com.example.account.api.account.AccountInfo fillAccountInfo(AccountInfo source) {
+
+        com.example.account.api.account.AccountInfo destination = new com.example.account.api.account.AccountInfo();
+
+        destination.setId(source.getId());
+        destination.setAccountNumber(source.getAccountNumber());
+        destination.setAmount(source.getAmount());
+        destination.setBalance(source.getBalance());
+        destination.setTransferDate(source.getTransferDate());
+        destination.setTransferType(TransferType.valueOfCode(source.getTransferTypeCode()));
+
+        return destination;
+    }
+
+
 }

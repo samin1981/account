@@ -1,36 +1,21 @@
-package com.example.account.domain;
+package com.example.account.api.account;
 
-import javax.persistence.*;
+import com.example.account.api.TransferType;
+import com.example.account.api.transaction.Transaction;
+
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(name = "account_info")
 public class AccountInfo {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_info_id_seq")
-    @SequenceGenerator(name = "account_info_id_seq", sequenceName = "ACCOUNT_INFO_ID_SEQ", allocationSize = 1)
+
     private Integer id;
-
     private String accountNumber;
-
     private BigDecimal balance;
-
     private BigDecimal amount;
-
-    private Integer transferTypeCode;
-
+    private TransferType transferType;
     private Date transferDate;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_info_id", foreignKey = @ForeignKey(name = "fk_transaction"))
     private List<Transaction> transactions;
-
-    @Version
-    private Timestamp version;
 
     public Integer getId() {
         return id;
@@ -64,12 +49,12 @@ public class AccountInfo {
         this.amount = amount;
     }
 
-    public Integer getTransferTypeCode() {
-        return transferTypeCode;
+    public TransferType getTransferType() {
+        return transferType;
     }
 
-    public void setTransferTypeCode(Integer transferTypeCode) {
-        this.transferTypeCode = transferTypeCode;
+    public void setTransferType(TransferType transferType) {
+        this.transferType = transferType;
     }
 
     public Date getTransferDate() {
@@ -87,4 +72,18 @@ public class AccountInfo {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
+
+    @Override
+    public String toString() {
+        return "AccountInfos{" +
+                "id=" + id +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", balance=" + balance +
+                ", amount=" + amount +
+                ", transferType=" + transferType +
+                ", transferDate=" + transferDate +
+                '}';
+    }
+
+
 }

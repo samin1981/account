@@ -1,9 +1,9 @@
 package com.example.account.api.person;
 
-public class RemovePersonResult {
+public class RemovePersonByNationalCodeResult {
     private boolean successful;
 
-    public RemovePersonResult(boolean successful) {
+    public RemovePersonByNationalCodeResult(boolean successful) {
         this.successful = successful;
     }
 
