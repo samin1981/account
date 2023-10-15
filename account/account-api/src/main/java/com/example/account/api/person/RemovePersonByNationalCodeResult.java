@@ -1,24 +1,10 @@
 package com.example.account.api.person;
 
-public class RemovePersonByNationalCodeResult {
-    private boolean successful;
+import com.example.account.api.base.SuccessfulResult;
+
+public class RemovePersonByNationalCodeResult extends SuccessfulResult {
 
     public RemovePersonByNationalCodeResult(boolean successful) {
-        this.successful = successful;
-    }
-
-    public boolean isSuccessful() {
-        return successful;
-    }
-
-    public void setSuccessful(boolean successful) {
-        this.successful = successful;
-    }
-
-    @Override
-    public String toString() {
-        return "RemovePersonResult{" +
-                "successful=" + successful +
-                '}';
+        super(successful);
     }
 }

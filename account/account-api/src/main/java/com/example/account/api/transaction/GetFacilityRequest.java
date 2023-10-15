@@ -1,8 +1,16 @@
 package com.example.account.api.transaction;
 
-public class GetTransactionsByAccountNumberRequest {
-
+public class GetFacilityRequest {
+    private String nationalCode;
     private String accountNumber;
+
+    public String getNationalCode() {
+        return nationalCode;
+    }
+
+    public void setNationalCode(String nationalCode) {
+        this.nationalCode = nationalCode;
+    }
 
     public String getAccountNumber() {
         return accountNumber;

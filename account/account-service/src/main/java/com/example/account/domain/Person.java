@@ -21,7 +21,7 @@ public class Person {
     private String phoneNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "fk_account_info"))
+    @JoinColumn(name = "account_info_id", foreignKey = @ForeignKey(name = "fk_account_info"))
     private AccountInfo accountInfo;
 
     @Version

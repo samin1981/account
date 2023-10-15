@@ -1,7 +1,6 @@
 package com.example.account.api.person;
 
 public class GetPersonByNationalCodeRequest {
-
     private String nationalCode;
 
     public String getNationalCode() {

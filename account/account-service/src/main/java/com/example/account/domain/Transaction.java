@@ -13,22 +13,15 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_id_seq")
     @SequenceGenerator(name = "transaction_id_seq", sequenceName = "TRANSACTION_ID_SEQ", allocationSize = 1)
     private Integer id;
-
     private String sourceAccountNumber;
-
     private String destinationAccountNumber;
-
     private BigDecimal amount;
-
+    private BigDecimal srcBalance;
+    private BigDecimal destBalance;
     private Date transferDate;
-
     private String trackingCode;
-
     private Integer transactionTypeCode;
-
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_transaction"))
-    private AccountInfo accountInfo;
+    private Integer srcTransferTypeCode;
 
     @Version
     private Timestamp version;
@@ -65,6 +58,22 @@ public class Transaction {
         this.amount = amount;
     }
 
+    public BigDecimal getSrcBalance() {
+        return srcBalance;
+    }
+
+    public void setSrcBalance(BigDecimal balance) {
+        this.srcBalance = balance;
+    }
+
+    public BigDecimal getDestBalance() {
+        return destBalance;
+    }
+
+    public void setDestBalance(BigDecimal destBalance) {
+        this.destBalance = destBalance;
+    }
+
     public Date getTransferDate() {
         return transferDate;
     }
@@ -89,11 +98,11 @@ public class Transaction {
         this.transactionTypeCode = transactionTypeCode;
     }
 
-    public AccountInfo getAccountInfo() {
-        return accountInfo;
+    public Integer getSrcTransferTypeCode() {
+        return srcTransferTypeCode;
     }
 
-    public void setAccountInfo(AccountInfo accountInfo) {
-        this.accountInfo = accountInfo;
+    public void setSrcTransferTypeCode(Integer srcTransferTypeCode) {
+        this.srcTransferTypeCode = srcTransferTypeCode;
     }
 }

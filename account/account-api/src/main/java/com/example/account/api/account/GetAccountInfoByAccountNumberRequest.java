@@ -1,14 +1,7 @@
 package com.example.account.api.account;
 
-public class GetAccountInfoByAccountNumberRequest {
+import com.example.account.api.base.AccountNumberRequest;
 
-    public String getAccountNumber;
+public class GetAccountInfoByAccountNumberRequest extends AccountNumberRequest {
 
-    public String getGetAccountNumber() {
-        return getAccountNumber;
-    }
-
-    public void setGetAccountNumber(String getAccountNumber) {
-        this.getAccountNumber = getAccountNumber;
-    }
 }

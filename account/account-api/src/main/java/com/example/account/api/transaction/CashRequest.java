@@ -1,12 +1,11 @@
-package com.example.account.api.account;
+package com.example.account.api.transaction;
 
-import com.example.account.api.TransferType;
+import com.example.account.api.transaction.TransferType;
 
 import java.math.BigDecimal;
 
-public class CashDepositRequest {
+public class CashRequest {
     private BigDecimal amount;
-    private String nationalCode;
     private String accountNumber;
     private TransferType transferType;
 
@@ -16,14 +15,6 @@ public class CashDepositRequest {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public String getNationalCode() {
-        return nationalCode;
-    }
-
-    public void setNationalCode(String nationalCode) {
-        this.nationalCode = nationalCode;
     }
 
     public String getAccountNumber() {

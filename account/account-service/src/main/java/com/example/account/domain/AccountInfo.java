@@ -3,8 +3,6 @@ package com.example.account.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "account_info")
@@ -22,12 +20,6 @@ public class AccountInfo {
     private BigDecimal amount;
 
     private Integer transferTypeCode;
-
-    private Date transferDate;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_info_id", foreignKey = @ForeignKey(name = "fk_transaction"))
-    private List<Transaction> transactions;
 
     @Version
     private Timestamp version;
@@ -70,21 +62,5 @@ public class AccountInfo {
 
     public void setTransferTypeCode(Integer transferTypeCode) {
         this.transferTypeCode = transferTypeCode;
-    }
-
-    public Date getTransferDate() {
-        return transferDate;
-    }
-
-    public void setTransferDate(Date transferDate) {
-        this.transferDate = transferDate;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
     }
 }

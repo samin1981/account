@@ -1,21 +1,15 @@
 package com.example.account.api.account;
 
-import com.example.account.api.TransferType;
-import com.example.account.api.transaction.Transaction;
+import com.example.account.api.transaction.TransferType;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
 
-public class AccountInfo {
-
+public class AccountInfoResult {
     private Integer id;
     private String accountNumber;
     private BigDecimal balance;
     private BigDecimal amount;
     private TransferType transferType;
-    private Date transferDate;
-    private List<Transaction> transactions;
 
     public Integer getId() {
         return id;
@@ -56,34 +50,14 @@ public class AccountInfo {
     public void setTransferType(TransferType transferType) {
         this.transferType = transferType;
     }
-
-    public Date getTransferDate() {
-        return transferDate;
-    }
-
-    public void setTransferDate(Date transferDate) {
-        this.transferDate = transferDate;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
     @Override
     public String toString() {
-        return "AccountInfos{" +
+        return "AccountInfo{" +
                 "id=" + id +
                 ", accountNumber='" + accountNumber + '\'' +
                 ", balance=" + balance +
                 ", amount=" + amount +
                 ", transferType=" + transferType +
-                ", transferDate=" + transferDate +
                 '}';
     }
-
-
 }

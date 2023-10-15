@@ -1,25 +1,18 @@
 package com.example.account.api.transaction;
 
-import com.example.account.api.TransactionType;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Transaction {
-
+public class TransactionResult {
     private Integer id;
-
     private String sourceAccountNumber;
-
     private String destinationAccountNumber;
-
     private BigDecimal amount;
-
+    private BigDecimal srcBalance;
+    private BigDecimal destBalance;
     private Date transferDate;
-
     private String trackingCode;
-
-    private TransactionType transactionType;
+    private TransactionType transactionTypeCode;
 
     public Integer getId() {
         return id;
@@ -53,6 +46,22 @@ public class Transaction {
         this.amount = amount;
     }
 
+    public BigDecimal getSrcBalance() {
+        return srcBalance;
+    }
+
+    public void setSrcBalance(BigDecimal srcBalance) {
+        this.srcBalance = srcBalance;
+    }
+
+    public BigDecimal getDestBalance() {
+        return destBalance;
+    }
+
+    public void setDestBalance(BigDecimal destBalance) {
+        this.destBalance = destBalance;
+    }
+
     public Date getTransferDate() {
         return transferDate;
     }
@@ -69,11 +78,11 @@ public class Transaction {
         this.trackingCode = trackingCode;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public TransactionType getTransactionTypeCode() {
+        return transactionTypeCode;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
+    public void setTransactionTypeCode(TransactionType transactionTypeCode) {
+        this.transactionTypeCode = transactionTypeCode;
     }
 }

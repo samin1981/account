@@ -2,17 +2,13 @@ package com.example.account.api.base;
 
 import com.example.account.api.account.*;
 import com.example.account.api.person.*;
-import com.example.account.api.transaction.GetAllTransactionsRequest;
-import com.example.account.api.transaction.GetAllTransactionsResult;
-import com.example.account.api.transaction.GetTransactionsByAccountNumberRequest;
-import com.example.account.api.transaction.GetTransactionsByAccountNumberResult;
-import org.springframework.web.bind.annotation.*;
+import com.example.account.api.transaction.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 import javax.ws.rs.core.MediaType;
-
 public interface AccAPI {
-
     @PostMapping(value = "/person/getAllPersons", produces = MediaType.APPLICATION_JSON)
     GetAllPersonsResult getAllPersons(@Valid @RequestBody GetAllPersonsRequest request);
 
@@ -37,18 +33,27 @@ public interface AccAPI {
     @PostMapping(value = "/account/getAccountInfoByAccountNumber", produces = MediaType.APPLICATION_JSON)
     GetAccountInfoByAccountNumberResult getAccountInfoByAccountNumber(@Valid @RequestBody GetAccountInfoByAccountNumberRequest request);
 
-    @PostMapping(value = "/account/getAllTransactions", produces = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/transaction/getAllTransactions", produces = MediaType.APPLICATION_JSON)
     GetAllTransactionsResult getAllTransactions(@Valid @RequestBody GetAllTransactionsRequest request);
 
-    @PostMapping(value = "/account/getTransactionsByAccountNumber", produces = MediaType.APPLICATION_JSON)
-    GetTransactionsByAccountNumberResult getTransactionsByAccountNumber(@Valid @RequestBody GetTransactionsByAccountNumberRequest request);
+    @PostMapping(value = "/transaction/getTransactionsBySourceAccountNumber", produces = MediaType.APPLICATION_JSON)
+    GetTransactionsBySourceAccountNumberResult getTransactionsBySourceAccountNumber(@Valid @RequestBody GetTransactionsBySourceAccountNumberRequest request);
 
-    @PostMapping(value = "/account/internalTransfer", produces = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/transaction/getTransactionsByDestAccountNumber", produces = MediaType.APPLICATION_JSON)
+    GetTransactionsByDestAccountNumberResult getTransactionsByDestAccountNumber(@Valid @RequestBody GetTransactionsByDestAccountNumberRequest request);
+
+    @PostMapping(value = "/transaction/getTransactionsByTransferDate", produces = MediaType.APPLICATION_JSON)
+    GetTransactionsByTransferDateResult getTransactionsByTransferDate(@Valid @RequestBody GetTransactionsByTransferDateRequest request);
+
+    @PostMapping(value = "/transaction/internalTransfer", produces = MediaType.APPLICATION_JSON)
     InternalTransferResult internalTransfer(@Valid @RequestBody InternalTransferRequest request);
 
-    @PostMapping(value = "/account/cashDeposit", produces = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/transaction/cashDeposit", produces = MediaType.APPLICATION_JSON)
     CashDepositResult cashDeposit(@Valid @RequestBody CashDepositRequest request);
 
-    @PostMapping(value = "/account/cashWithdraw", produces = MediaType.APPLICATION_JSON)
+    @PostMapping(value = "/transaction/cashWithdraw", produces = MediaType.APPLICATION_JSON)
     CashWithdrawResult cashWithdraw(@Valid @RequestBody CashWithdrawRequest request);
+
+    @PostMapping(value = "/transaction/getFacility", produces = MediaType.APPLICATION_JSON)
+    GetFacilityResult getFacility(@Valid @RequestBody GetFacilityRequest request);
 }

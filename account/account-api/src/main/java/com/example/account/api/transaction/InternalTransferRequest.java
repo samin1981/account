@@ -1,6 +1,4 @@
-package com.example.account.api.account;
-
-import com.example.account.api.TransferType;
+package com.example.account.api.transaction;
 
 import java.math.BigDecimal;
 
@@ -9,8 +7,6 @@ public class InternalTransferRequest {
     private String nationalCode;
     private String sourceAccountNumber;
     private String destinationAccountNumber;
-    private TransferType transferType;
-
     public BigDecimal getAmount() {
         return amount;
     }
@@ -42,15 +38,6 @@ public class InternalTransferRequest {
     public void setDestinationAccountNumber(String destinationAccountNumber) {
         this.destinationAccountNumber = destinationAccountNumber;
     }
-
-    public TransferType getTransferType() {
-        return transferType;
-    }
-
-    public void setTransferType(TransferType transferType) {
-        this.transferType = transferType;
-    }
-
     @Override
     public String toString() {
         return "InternalTransferRequest{" +
@@ -58,7 +45,6 @@ public class InternalTransferRequest {
                 ", nationalCode='" + nationalCode + '\'' +
                 ", fromAccountNumber='" + sourceAccountNumber + '\'' +
                 ", toAccountNumber='" + destinationAccountNumber + '\'' +
-                ", transferType=" + transferType +
                 '}';
     }
 }

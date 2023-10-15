@@ -1,4 +1,4 @@
-package com.example.account.api;
+package com.example.account.api.transaction;
 
 public enum TransferType {
     DEPOSIT(0),

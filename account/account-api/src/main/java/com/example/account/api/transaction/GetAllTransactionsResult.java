@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAllTransactionsResult {
-    private List<Transaction> items = new ArrayList<>();
+    private List<TransactionResult> items = new ArrayList<>();
 
-    public List<Transaction> getItems() {
+    public List<TransactionResult> getItems() {
         return items;
     }
 
-    public void setItems(List<Transaction> items) {
+    public void setItems(List<TransactionResult> items) {
         this.items = items;
     }
 }

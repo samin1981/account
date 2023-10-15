@@ -1,6 +1,6 @@
-package com.example.account.api.account;
+package com.example.account.api.base;
 
-public class CashDepositResult {
+public class TrackingCodeResult {
     private String trackingCode;
 
     public String getTrackingCode() {

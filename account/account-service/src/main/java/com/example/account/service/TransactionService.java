@@ -1,13 +1,21 @@
 package com.example.account.service;
 
-import com.example.account.api.transaction.GetAllTransactionsResult;
-import com.example.account.api.transaction.GetTransactionsByAccountNumberRequest;
-import com.example.account.api.transaction.GetTransactionsByAccountNumberResult;
+import com.example.account.GenericMappersMethods;
+import com.example.account.api.transaction.GetTransactionsByTransferDateRequest;
+import com.example.account.api.transaction.GetTransactionsByTransferDateResult;
+import com.example.account.api.transaction.*;
+import com.example.account.builder.TransactionBuilder;
+import com.example.account.domain.AccountInfo;
+import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
+import com.example.account.repository.AccountInfoRepository;
+import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
+import common.UtilAccount;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,29 +23,36 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Throwable.class)
 public class TransactionService {
     private final TransactionRepository transactionRepository;
+    private final PersonRepository personRepository;
+    private final AccountInfoRepository accountInfoRepository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(TransactionRepository transactionRepository,
+                              PersonRepository personRepository,
+                              AccountInfoRepository accountInfoRepository) {
+
         this.transactionRepository = transactionRepository;
+        this.personRepository = personRepository;
+        this.accountInfoRepository = accountInfoRepository;
     }
 
     public GetAllTransactionsResult getAllTransactions() {
         GetAllTransactionsResult result = new GetAllTransactionsResult();
-        List<com.example.account.api.transaction.Transaction> transactions = transactionRepository.findAll().stream().map(this::transactionDetailMapper).collect(Collectors.toList());
+        List<TransactionResult> transactions = transactionRepository.findAll().stream().map(this::transactionsMapper).collect(Collectors.toList());
         if (transactions.isEmpty() && transactions.size() == 0) {
-           //transaction not found
+            //transaction not found
         }
         result.setItems(transactions);
 
         return result;
     }
 
-    public GetTransactionsByAccountNumberResult getTransactionByAccountNumber(GetTransactionsByAccountNumberRequest request) {
-        GetTransactionsByAccountNumberResult result = new GetTransactionsByAccountNumberResult();
+    public GetTransactionsBySourceAccountNumberResult getTransactionsBySourceAccountNumber(GetTransactionsBySourceAccountNumberRequest request) {
+        GetTransactionsBySourceAccountNumberResult result = new GetTransactionsBySourceAccountNumberResult();
 
-        List<Transaction> destTransactions = transactionRepository.findTransactionByAccountInfo_AccountNumber(request.getAccountNumber());
-        List<com.example.account.api.transaction.Transaction> transactions = destTransactions.stream().map(this::transactionDetailMapper).collect(Collectors.toList());
+        List<TransactionResult> transactions = transactionRepository.findTransactionsBySourceAccountNumber(request.getAccountNumber())
+                .stream().map(this::transactionsMapper).collect(Collectors.toList());
 
-        if(transactions.isEmpty() && transactions.size() == 0) {
+        if (transactions.isEmpty() && transactions.size() == 0) {
             //transactions not found
         }
         result.setItems(transactions);
@@ -45,17 +60,201 @@ public class TransactionService {
         return result;
     }
 
-    private com.example.account.api.transaction.Transaction transactionDetailMapper(Transaction source) {
-        com.example.account.api.transaction.Transaction destination = new com.example.account.api.transaction.Transaction();
+    public GetTransactionsByDestAccountNumberResult getTransactionsByDestAccountNumber(GetTransactionsByDestAccountNumberRequest request) {
+        GetTransactionsByDestAccountNumberResult result = new GetTransactionsByDestAccountNumberResult();
 
-        destination.setId(source.getId());
-        destination.setAmount(source.getAmount());
-        destination.setSourceAccountNumber(source.getSourceAccountNumber());
-        destination.setDestinationAccountNumber(source.getDestinationAccountNumber());
-        destination.setTransferDate(source.getTransferDate());
-        destination.setTrackingCode(source.getTrackingCode());
-        destination.setTransactionType(com.example.account.api.TransactionType.valueOfCode(source.getTransactionTypeCode()));
+        List<TransactionResult> transactions = transactionRepository.findTransactionsByDestinationAccountNumber(request.getAccountNumber())
+                .stream().map(this::transactionsMapper).collect(Collectors.toList());
 
-        return destination;
+        if (transactions.isEmpty() && transactions.size() == 0) {
+            //transactions not found
+        }
+        result.setItems(transactions);
+
+        return result;
+    }
+
+    public GetTransactionsByTransferDateResult getTransactionsByTransferDate(GetTransactionsByTransferDateRequest request) {
+        GetTransactionsByTransferDateResult result = new GetTransactionsByTransferDateResult();
+        List<TransactionResult> transactions = transactionRepository.findTransactionsByTransferDate(request.getTransferDate())
+                .stream().map(this::transactionsMapper).collect(Collectors.toList());
+
+        if (transactions.isEmpty() && transactions.size() == 0) {
+            //transactions not found
+        }
+        result.setItems(transactions);
+
+        return result;
+    }
+
+    private TransactionResult transactionsMapper(Transaction transaction) {
+        TransactionResult result = new TransactionResult();
+        GenericMappersMethods.transactionMapper(transaction, result);
+
+        return result;
+    }
+
+    public InternalTransferResult internalTransfer(InternalTransferRequest request) {
+        InternalTransferResult result = new InternalTransferResult();
+
+        AccountInfo sourceAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getSourceAccountNumber());
+        if (sourceAccountInfo == null) {
+            //shomare hesabe mabda vojood nadarasd
+        }
+
+        Person sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
+        if (sourcePerson == null) {
+            //shakhs ba in shomare melli yaft nashod
+        }
+
+        if (!sourcePerson.getAccountInfo().equals(sourceAccountInfo)) {
+            // in hesab moteallegh be in shakhs nemibashad
+        }
+        if (request.getAmount().compareTo(sourceAccountInfo.getBalance()) == 1) {
+            // mojoodi nakafi ast
+        }
+
+        AccountInfo destAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getDestinationAccountNumber());
+        if (destAccountInfo == null) {
+            //shomare hesabe maghsad vojood nadarasd
+        }
+
+        Person destinationPerson = personRepository.findPersonByAccountInfo(destAccountInfo.getAccountNumber());
+        if(destinationPerson == null) {
+            //shakhs ba shomare hesab ... yaft nashod
+        } else {
+            // in shomare hesab moteallegh be shakhs dest mibashad
+        }
+
+        sourceAccountInfo.setAmount(request.getAmount());
+        sourceAccountInfo.setBalance(sourceAccountInfo.getBalance().add(request.getAmount().negate()));
+        sourceAccountInfo.setTransferTypeCode(TransferType.WITHDRAW.code);
+
+        destAccountInfo.setAmount(request.getAmount());
+        destAccountInfo.setBalance(destAccountInfo.getBalance().add(request.getAmount()));
+        destAccountInfo.setTransferTypeCode(TransferType.DEPOSIT.code);
+
+        accountInfoRepository.save(sourceAccountInfo);
+        accountInfoRepository.save(destAccountInfo);
+
+        Transaction transaction = TransactionBuilder.getInstance()
+                .sourceAccountNumber(sourceAccountInfo.getAccountNumber())
+                .destinationAccountNumber(destAccountInfo.getAccountNumber())
+                .amount(request.getAmount())
+                .srcBalance(sourceAccountInfo.getBalance())
+                .destBalance(destAccountInfo.getBalance())
+                .trackingCode(UtilAccount.generateTrackingCode())
+                .transferDate(new Date())
+                .transactionTypeCode(TransactionType.INTERNAL.code)
+                .srcTransferTypeCode(sourceAccountInfo.getTransferTypeCode())
+                .build();
+        transactionRepository.save(transaction);
+
+        result.setTrackingCode(transaction.getTrackingCode());
+        return result;
+    }
+
+    public CashDepositResult cashDeposit(CashDepositRequest request) {
+        CashDepositResult result = new CashDepositResult();
+
+        AccountInfo destAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
+        if (destAccountInfo == null) {
+            //hesabe vojood nadarad
+        }
+
+        Person destPerson = personRepository.findPersonByAccountInfo(destAccountInfo.getAccountNumber());
+        if (destPerson != null) {
+            //in shomare hesab motealegh be ... ast
+        }
+        else {
+            //shakhs ba in shomare hesab yaft nashod
+        }
+        if (request.getAmount() == null) {
+            //mablagh nemitavanad sefr bashad
+        }
+
+        destAccountInfo.setAmount(request.getAmount());
+        destAccountInfo.setTransferTypeCode(TransferType.DEPOSIT.code);
+        destAccountInfo.setBalance(destAccountInfo.getBalance().add(request.getAmount()));
+        accountInfoRepository.save(destAccountInfo);
+
+        Transaction transaction = TransactionBuilder.getInstance()
+                .sourceAccountNumber(null)
+                .destinationAccountNumber(request.getAccountNumber())
+                .amount(destAccountInfo.getAmount())
+                .srcBalance(null)
+                .destBalance(destAccountInfo.getBalance())
+                .trackingCode(UtilAccount.generateTrackingCode())
+                .transferDate(new Date())
+                .transactionTypeCode(TransactionType.CASH.code)
+                .srcTransferTypeCode(null)
+                .build();
+
+        transactionRepository.save(transaction);
+        result.setTrackingCode(transaction.getTrackingCode());
+
+        return result;
+    }
+
+    public CashWithdrawResult cashWithdraw(CashWithdrawRequest request) {
+        CashWithdrawResult result = new CashWithdrawResult();
+
+        AccountInfo sourceAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
+        if (sourceAccountInfo == null) {
+            //shomare hesabe mabda vojood nadarasd
+        }
+
+        Person sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
+        if (sourcePerson == null) {
+            //shakhs ba in shomare melli yaft nashod
+        }
+
+        if (!sourcePerson.getAccountInfo().equals(sourceAccountInfo)) {
+            // in hesab moteallegh be in shakhs nemibashad
+        }
+        if (request.getAmount().compareTo(sourceAccountInfo.getBalance()) == 1) {
+            // mojoodi nakafi ast
+        }
+
+        sourceAccountInfo.setAmount(request.getAmount());
+        sourceAccountInfo.setBalance(sourceAccountInfo.getBalance().add(request.getAmount().negate()));
+        sourceAccountInfo.setTransferTypeCode(TransferType.WITHDRAW.code);
+
+        accountInfoRepository.save(sourceAccountInfo);
+
+        Transaction transaction = TransactionBuilder.getInstance()
+                .srcBalance(sourceAccountInfo.getBalance())
+                .amount(sourceAccountInfo.getAmount())
+                .destBalance(null)
+                .sourceAccountNumber(sourceAccountInfo.getAccountNumber())
+                .destinationAccountNumber(null)
+                .transactionTypeCode(TransactionType.CASH.code)
+                .srcTransferTypeCode(sourceAccountInfo.getTransferTypeCode())
+                .trackingCode(UtilAccount.generateTrackingCode())
+                .transferDate(new Date())
+                .build();
+
+        transactionRepository.save(transaction);
+        result.setTrackingCode(transaction.getTrackingCode());
+
+        return result;
+    }
+
+    public GetFacilityResult getFacility(GetFacilityRequest request) {
+        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
+        if (person == null) {
+            //shakhs ba in shomare melli yaft nashod
+        }
+        AccountInfo accountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
+        if (accountInfo == null) {
+            //shomare hesabe vojood nadarasd
+        }
+        if (!person.getAccountInfo().equals(accountInfo)) {
+            // in hesab moteallegh be in shakhs nemibashad
+        }
+
+//        List<Transaction> transactions = transactionRepository.findTransactionsByTransferDateAndTransferTypeCode(request.get)
+
+        return null;
     }
 }
