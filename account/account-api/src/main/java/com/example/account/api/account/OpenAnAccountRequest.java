@@ -4,11 +4,12 @@ import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 
 public class OpenAnAccountRequest {
-
     @Pattern(regexp = "\\d{10}")
     private String nationalCode;
 
     private BigDecimal amount;
+
+    private Boolean withdrawable;
 
     public String getNationalCode() {
         return nationalCode;
@@ -26,11 +27,11 @@ public class OpenAnAccountRequest {
         this.amount = amount;
     }
 
-    @Override
-    public String toString() {
-        return "OpenAnAccountRequest{" +
-                "amount='" + amount + '\'' +
-                "nationalCode='" + nationalCode + '\'' +
-                '}';
+    public Boolean getWithdrawable() {
+        return withdrawable;
+    }
+
+    public void setWithdrawable(Boolean withdrawable) {
+        this.withdrawable = withdrawable;
     }
 }

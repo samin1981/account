@@ -2,7 +2,6 @@ package com.example.account.service;
 
 import com.example.account.GenericMappersMethods;
 import com.example.account.api.account.*;
-import com.example.account.api.transaction.*;
 import com.example.account.builder.AccountInfoBuilder;
 import com.example.account.builder.TransactionBuilder;
 import com.example.account.domain.AccountInfo;
@@ -11,12 +10,10 @@ import com.example.account.domain.Transaction;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
-import common.AccountError;
-import common.AccountErrorsStatic;
-import common.UtilAccount;
-import org.apache.logging.log4j.Level;
+import commons.UtilAccount;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +26,15 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Throwable.class)
 public class AccountInfoService {
     private static final Logger logger = LogManager.getLogger(AccountInfoService.class);
-
     private final AccountInfoRepository accountInfoRepository;
     private final PersonRepository personRepository;
     private final TransactionRepository transactionRepository;
+
+    @Value("${open.account.sign}")
+    private String openAccountSign;
+
+    @Value("${amount.for.open.account}")
+    private BigDecimal amountForOpenAccount;
 
     public AccountInfoService(AccountInfoRepository accountInfoRepository,
                               PersonRepository personRepository,
@@ -42,17 +44,12 @@ public class AccountInfoService {
         this.transactionRepository = transactionRepository;
     }
 
-    public GetAllAccountInfosResult getAllAccountInfos() {
+    public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
 
         GetAllAccountInfosResult result = new GetAllAccountInfosResult();
         List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream().map(this::accountInfosMapper).collect(Collectors.toList());
         if (accountInfos.isEmpty() && accountInfos.size() == 0) {
-            try {
-                logger.log(Level.INFO, "accounts info not found.");
-                throw new AccountError(AccountErrorsStatic.ERROR_ACCOUNT_ACCOUNT_INFO_NOT_FOUND);
-            } catch (AccountError accountError) {
-                accountError.printStackTrace();
-            }
+
         }
         result.setItems(accountInfos);
 
@@ -78,11 +75,14 @@ public class AccountInfoService {
         return result;
     }
 
-    public void openAnAccount(OpenAnAccountRequest request) {
-        BigDecimal newAmount = new BigDecimal(100);
+    public OpenAnAccountResult openAnAccount(OpenAnAccountRequest request) {
+        OpenAnAccountResult result = new OpenAnAccountResult();
+
+        BigDecimal newAmount = new BigDecimal(amountForOpenAccount.longValue());
         if (request.getAmount().compareTo(newAmount) < 0) {
             //baraye eftetahe hesab hadeaghal 100 rial niaz ast
         }
+
         Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
         if (existPerson == null) {
             //shakhs ba in code melli yaft nashod
@@ -97,8 +97,13 @@ public class AccountInfoService {
                 .amount(request.getAmount())
                 .balance(request.getAmount())
                 .transferTypeCode(TransferType.DEPOSIT.code)
+                .withdrawable(request.getWithdrawable() ? 1 : 0)
                 .build();
+
         accountInfoRepository.save(accountInfo);
+
+        existPerson.setAccountInfo(accountInfo);
+        personRepository.save(existPerson);
 
         Transaction transaction = TransactionBuilder.getInstance()
                 .sourceAccountNumber(null)
@@ -108,11 +113,13 @@ public class AccountInfoService {
                 .srcTransferTypeCode(null)
                 .amount(accountInfo.getAmount())
                 .destBalance(accountInfo.getBalance())
-                .trackingCode("OAAC_" + UtilAccount.generateTrackingCode())
+                .trackingCode(openAccountSign + UtilAccount.generateTrackingCode())
                 .build();
 
         transactionRepository.save(transaction);
-    }
+        result.setAccountNumber(accountInfo.getAccountNumber());
 
+        return result;
+    }
 
 }

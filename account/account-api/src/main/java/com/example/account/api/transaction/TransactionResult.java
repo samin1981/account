@@ -12,7 +12,8 @@ public class TransactionResult {
     private BigDecimal destBalance;
     private Date transferDate;
     private String trackingCode;
-    private TransactionType transactionTypeCode;
+    private TransactionType transactionType;
+    private TransferType srcTransferType;
 
     public Integer getId() {
         return id;
@@ -78,11 +79,19 @@ public class TransactionResult {
         this.trackingCode = trackingCode;
     }
 
-    public TransactionType getTransactionTypeCode() {
-        return transactionTypeCode;
+    public TransactionType getTransactionType() {
+        return transactionType;
     }
 
-    public void setTransactionTypeCode(TransactionType transactionTypeCode) {
-        this.transactionTypeCode = transactionTypeCode;
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public TransferType getSrcTransferType() {
+        return srcTransferType;
+    }
+
+    public void setSrcTransferType(TransferType srcTransferType) {
+        this.srcTransferType = srcTransferType;
     }
 }

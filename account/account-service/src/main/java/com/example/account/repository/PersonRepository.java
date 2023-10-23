@@ -10,9 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Integer> {
-
     Optional<Person> findPersonByNationalCode(String nationalCode);
-
     @Query("select person from Person person join person.accountInfo accountInfo where accountInfo.accountNumber = :accountNumber")
     Person findPersonByAccountInfo(@Param("accountNumber") String accountNumber);
 }

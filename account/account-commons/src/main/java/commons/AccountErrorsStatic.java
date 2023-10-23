@@ -1,4 +1,4 @@
-package common;
+package commons;
 
 public class AccountErrorsStatic {
     private AccountErrorsStatic() {
@@ -15,7 +15,6 @@ public class AccountErrorsStatic {
 
     //<editor-fold desc="Business Errors">
     public static final String ERROR_ACCOUNT_PERSON_NOT_FOUND = "EAP0001";
-
     public static final String ERROR_ACCOUNT_ACCOUNT_INFO_NOT_FOUND = "EAA0001";
 
     //</editor-fold>

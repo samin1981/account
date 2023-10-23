@@ -21,6 +21,8 @@ public class AccountInfo {
 
     private Integer transferTypeCode;
 
+    private Integer withdrawable;
+
     @Version
     private Timestamp version;
 
@@ -62,5 +64,13 @@ public class AccountInfo {
 
     public void setTransferTypeCode(Integer transferTypeCode) {
         this.transferTypeCode = transferTypeCode;
+    }
+
+    public Integer getWithdrawable() {
+        return withdrawable;
+    }
+
+    public void setWithdrawable(Integer withdrawable) {
+        this.withdrawable = withdrawable;
     }
 }

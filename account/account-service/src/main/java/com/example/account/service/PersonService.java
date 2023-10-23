@@ -5,9 +5,8 @@ import com.example.account.api.person.*;
 import com.example.account.builder.PersonBuilder;
 import com.example.account.domain.Person;
 import com.example.account.repository.PersonRepository;
-import common.AccountError;
-import common.AccountErrorsStatic;
-import org.apache.logging.log4j.Level;
+import commons.AccountErrorsStatic;
+import commons.AccountException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,35 +29,24 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public GetAllPersonsResult getAllPersons() {
-
+    public GetAllPersonsResult getAllPersons(GetAllPersonsRequest request) {
         GetAllPersonsResult result = new GetAllPersonsResult();
+
         List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAll().stream().map(this::personsMapper).collect(Collectors.toList());
         if (persons.isEmpty() && persons.size() == 0) {
-            try {
-                logger.log(Level.INFO, "person not found.");
-                throw new AccountError(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
-            } catch (AccountError accountError) {
-                accountError.printStackTrace();
-            }
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
         }
         result.setItems(persons);
-
         return result;
     }
 
 
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
 
-        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
-        if (person == null) {
-            try {
-                logger.log(Level.INFO, "person ba in code melli yaft nashod.");
-                throw new AccountError(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
-            } catch (AccountError accountError) {
-                accountError.printStackTrace();
-            }
+        if (personRepository.findPersonByNationalCode(request.getNationalCode()).isEmpty()) {
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND, request.getNationalCode());
         }
+        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).get();
         GetPersonByNationalCodeResult result = new GetPersonByNationalCodeResult();
         result = GenericMappersMethods.personMapper(person, result);
 

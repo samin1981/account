@@ -24,6 +24,10 @@ public class Person {
     @JoinColumn(name = "account_info_id", foreignKey = @ForeignKey(name = "fk_account_info"))
     private AccountInfo accountInfo;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "facility_id", foreignKey = @ForeignKey(name = "fk_facility"))
+    private Facility facility;
+
     @Version
     private Timestamp version;
 
@@ -65,5 +69,13 @@ public class Person {
 
     public void setAccountInfo(AccountInfo accountInfo) {
         this.accountInfo = accountInfo;
+    }
+
+    public Facility getFacility() {
+        return facility;
+    }
+
+    public void setFacility(Facility facility) {
+        this.facility = facility;
     }
 }

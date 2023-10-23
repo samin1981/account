@@ -9,6 +9,8 @@ public class AccountInfoBuilder {
     private BigDecimal balance;
     private BigDecimal amount;
     private Integer transferTypeCode;
+    private Integer withdrawable;
+
     private AccountInfoBuilder() {
     }
 
@@ -30,9 +32,13 @@ public class AccountInfoBuilder {
         this.amount = amount;
         return this;
     }
-
     public AccountInfoBuilder transferTypeCode(Integer transferTypeCode) {
         this.transferTypeCode = transferTypeCode;
+        return this;
+    }
+
+    public AccountInfoBuilder withdrawable(Integer withdrawable) {
+        this.withdrawable = withdrawable;
         return this;
     }
     public AccountInfo build() {
@@ -41,6 +47,7 @@ public class AccountInfoBuilder {
         accountInfo.setBalance(balance);
         accountInfo.setAmount(amount);
         accountInfo.setTransferTypeCode(transferTypeCode);
+        accountInfo.setWithdrawable(withdrawable);
 
         return accountInfo;
     }

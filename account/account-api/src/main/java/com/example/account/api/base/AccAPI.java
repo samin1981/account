@@ -1,6 +1,10 @@
 package com.example.account.api.base;
 
 import com.example.account.api.account.*;
+import com.example.account.api.facility.ConditionForFacilityRequest;
+import com.example.account.api.facility.ConditionForFacilityResult;
+import com.example.account.api.facility.GetFacilityRequest;
+import com.example.account.api.facility.GetFacilityResult;
 import com.example.account.api.person.*;
 import com.example.account.api.transaction.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +40,9 @@ public interface AccAPI {
     @PostMapping(value = "/transaction/getAllTransactions", produces = MediaType.APPLICATION_JSON)
     GetAllTransactionsResult getAllTransactions(@Valid @RequestBody GetAllTransactionsRequest request);
 
+    @PostMapping(value = "/transaction/getOpenAccountTransactions", produces = MediaType.APPLICATION_JSON)
+    GetOpenAccountTransactionsResult getOpenAccountTransactions(@Valid @RequestBody GetOpenAccountTransactionsRequest request);
+
     @PostMapping(value = "/transaction/getTransactionsBySourceAccountNumber", produces = MediaType.APPLICATION_JSON)
     GetTransactionsBySourceAccountNumberResult getTransactionsBySourceAccountNumber(@Valid @RequestBody GetTransactionsBySourceAccountNumberRequest request);
 
@@ -54,6 +61,8 @@ public interface AccAPI {
     @PostMapping(value = "/transaction/cashWithdraw", produces = MediaType.APPLICATION_JSON)
     CashWithdrawResult cashWithdraw(@Valid @RequestBody CashWithdrawRequest request);
 
-    @PostMapping(value = "/transaction/getFacility", produces = MediaType.APPLICATION_JSON)
-    GetFacilityResult getFacility(@Valid @RequestBody GetFacilityRequest request);
+    @PostMapping(value = "/facility/conditionForFacility", produces = MediaType.APPLICATION_JSON)
+    ConditionForFacilityResult conditionForFacility(@Valid @RequestBody ConditionForFacilityRequest request);
+    @PostMapping(value = "/facility/getFacility", produces = MediaType.APPLICATION_JSON)
+    GetFacilityResult getFacility(GetFacilityRequest request);
 }

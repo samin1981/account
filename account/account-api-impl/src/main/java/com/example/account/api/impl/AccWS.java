@@ -2,11 +2,16 @@ package com.example.account.api.impl;
 
 import com.example.account.api.account.*;
 import com.example.account.api.base.AccAPI;
+import com.example.account.api.facility.ConditionForFacilityRequest;
+import com.example.account.api.facility.ConditionForFacilityResult;
+import com.example.account.api.facility.GetFacilityRequest;
+import com.example.account.api.facility.GetFacilityResult;
 import com.example.account.api.transaction.GetTransactionsByTransferDateRequest;
 import com.example.account.api.transaction.GetTransactionsByTransferDateResult;
 import com.example.account.api.person.*;
 import com.example.account.api.transaction.*;
 import com.example.account.service.AccountInfoService;
+import com.example.account.service.FacilityService;
 import com.example.account.service.PersonService;
 import com.example.account.service.TransactionService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,20 +23,25 @@ public class AccWS implements AccAPI {
     private final PersonService personService;
     private final AccountInfoService accountInfoService;
     private final TransactionService transactionService;
+    private final FacilityService facilityService;
 
     public AccWS(PersonService personService,
                  AccountInfoService accountInfoService,
-                 TransactionService transactionService) {
+                 TransactionService transactionService,
+                 FacilityService facilityService) {
+
         this.personService = personService;
         this.accountInfoService = accountInfoService;
         this.transactionService = transactionService;
+        this.facilityService = facilityService;
     }
 
     // persons
     @Override
     public GetAllPersonsResult getAllPersons(GetAllPersonsRequest request) {
-        return personService.getAllPersons();
+        return personService.getAllPersons(request);
     }
+
     @Override
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
         return personService.getPersonByNationalCode(request);
@@ -53,12 +63,11 @@ public class AccWS implements AccAPI {
     // AccountInfos
     @Override
     public OpenAnAccountResult openAnAccount(OpenAnAccountRequest request) {
-        accountInfoService.openAnAccount(request);
-        return new OpenAnAccountResult(true);
+        return accountInfoService.openAnAccount(request);
     }
     @Override
     public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
-        return accountInfoService.getAllAccountInfos();
+        return accountInfoService.getAllAccountInfos(request);
     }
     @Override
     public GetAccountInfoByAccountNumberResult getAccountInfoByAccountNumber(GetAccountInfoByAccountNumberRequest request) {
@@ -67,7 +76,11 @@ public class AccWS implements AccAPI {
     // Transactions
     @Override
     public GetAllTransactionsResult getAllTransactions(GetAllTransactionsRequest request) {
-        return transactionService.getAllTransactions();
+        return transactionService.getAllTransactions(request);
+    }
+    @Override
+    public GetOpenAccountTransactionsResult getOpenAccountTransactions(GetOpenAccountTransactionsRequest request) {
+        return transactionService.getOpenAccountTransactions(request);
     }
     @Override
     public GetTransactionsBySourceAccountNumberResult getTransactionsBySourceAccountNumber(GetTransactionsBySourceAccountNumberRequest request) {
@@ -98,7 +111,13 @@ public class AccWS implements AccAPI {
     }
 
     @Override
+    public ConditionForFacilityResult conditionForFacility(ConditionForFacilityRequest request) {
+        facilityService.conditionForFacility(request);
+        return new ConditionForFacilityResult(true);
+    }
+
+    @Override
     public GetFacilityResult getFacility(GetFacilityRequest request) {
-        return transactionService.getFacility(request);
+        return facilityService.getFacility(request);
     }
 }

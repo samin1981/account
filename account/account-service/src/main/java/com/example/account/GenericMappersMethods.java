@@ -41,7 +41,10 @@ public class GenericMappersMethods {
         m.setDestinationAccountNumber(k.getDestinationAccountNumber());
         m.setTransferDate(k.getTransferDate());
         m.setTrackingCode(k.getTrackingCode());
-        m.setTransactionTypeCode(TransactionType.valueOfCode(k.getTransactionTypeCode()));
+        m.setTransactionType(TransactionType.valueOfCode(k.getTransactionTypeCode()));
+        if (k.getSrcTransferTypeCode() != null) {
+            m.setSrcTransferType(TransferType.valueOfCode(k.getSrcTransferTypeCode()));
+        }
 
         return m;
     }

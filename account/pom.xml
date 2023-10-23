@@ -8,7 +8,7 @@
         <module>account-api-impl</module>
         <module>account-service</module>
         <module>account-api</module>
-        <module>account-haminjoori</module>
+        <module>account-commons</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

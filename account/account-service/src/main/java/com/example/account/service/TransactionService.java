@@ -8,10 +8,12 @@ import com.example.account.builder.TransactionBuilder;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
+import com.example.account.domain.TransactionInfo;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
-import common.UtilAccount;
+import commons.UtilAccount;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,9 @@ public class TransactionService {
     private final PersonRepository personRepository;
     private final AccountInfoRepository accountInfoRepository;
 
+    @Value("${open.account.sign}")
+    private String openAccountSign;
+
     public TransactionService(TransactionRepository transactionRepository,
                               PersonRepository personRepository,
                               AccountInfoRepository accountInfoRepository) {
@@ -35,7 +40,7 @@ public class TransactionService {
         this.accountInfoRepository = accountInfoRepository;
     }
 
-    public GetAllTransactionsResult getAllTransactions() {
+    public GetAllTransactionsResult getAllTransactions(GetAllTransactionsRequest request) {
         GetAllTransactionsResult result = new GetAllTransactionsResult();
         List<TransactionResult> transactions = transactionRepository.findAll().stream().map(this::transactionsMapper).collect(Collectors.toList());
         if (transactions.isEmpty() && transactions.size() == 0) {
@@ -120,7 +125,7 @@ public class TransactionService {
         }
 
         Person destinationPerson = personRepository.findPersonByAccountInfo(destAccountInfo.getAccountNumber());
-        if(destinationPerson == null) {
+        if (destinationPerson == null) {
             //shakhs ba shomare hesab ... yaft nashod
         } else {
             // in shomare hesab moteallegh be shakhs dest mibashad
@@ -165,8 +170,7 @@ public class TransactionService {
         Person destPerson = personRepository.findPersonByAccountInfo(destAccountInfo.getAccountNumber());
         if (destPerson != null) {
             //in shomare hesab motealegh be ... ast
-        }
-        else {
+        } else {
             //shakhs ba in shomare hesab yaft nashod
         }
         if (request.getAmount() == null) {
@@ -240,21 +244,24 @@ public class TransactionService {
         return result;
     }
 
-    public GetFacilityResult getFacility(GetFacilityRequest request) {
-        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
-        if (person == null) {
-            //shakhs ba in shomare melli yaft nashod
-        }
-        AccountInfo accountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
-        if (accountInfo == null) {
-            //shomare hesabe vojood nadarasd
-        }
-        if (!person.getAccountInfo().equals(accountInfo)) {
-            // in hesab moteallegh be in shakhs nemibashad
-        }
+    public GetOpenAccountTransactionsResult getOpenAccountTransactions(GetOpenAccountTransactionsRequest request) {
+        GetOpenAccountTransactionsResult result = new GetOpenAccountTransactionsResult();
+        List<TransactionInfo> customTransactions = transactionRepository.getOpenAccountTransactions(openAccountSign);
 
-//        List<Transaction> transactions = transactionRepository.findTransactionsByTransferDateAndTransferTypeCode(request.get)
+        List<GetOpenAccountTransactionsResultItem> items = customTransactions.stream().map(c-> {
+            GetOpenAccountTransactionsResultItem item = new GetOpenAccountTransactionsResultItem();
+            item.setId(c.getId());
+            item.setAmount(c.getAmount());
+            item.setTransferDate(c.getTransferDate());
+            item.setDestinationAccountNumber(c.getDestinationAccountNumber());
 
-        return null;
+            return item;
+        }).collect(Collectors.toList());
+
+        result.setItems(items);
+        return result;
     }
+
+
+
 }

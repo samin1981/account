@@ -1,10 +1,13 @@
 package com.example.account.api.account;
 
-import com.example.account.api.base.SuccessfulResult;
+public class OpenAnAccountResult {
+    private String accountNumber;
 
-public class OpenAnAccountResult extends SuccessfulResult {
+    public String getAccountNumber() {
+        return accountNumber;
+    }
 
-    public OpenAnAccountResult(boolean successful) {
-        super(successful);
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 }
