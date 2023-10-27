@@ -1,11 +1,10 @@
-package commons;
+package com.example.account.comon;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
 public class UtilAccount {
-
     public static String generateAccountNumber() {
         while (true) {
             long numb = (long) (Math.random() * 100000000 * 1000000); // had to use this as int's are to small for a 13 digit number.

@@ -1,4 +1,4 @@
-package com.example.account;
+package com.example.account.helper;
 
 import com.example.account.api.account.AccountInfoResult;
 import com.example.account.api.person.PersonResult;
@@ -9,7 +9,7 @@ import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
 
-public class GenericMappersMethods {
+public class Mappers {
     public static <T extends Person, S extends PersonResult> S personMapper(T t, S s) {
         s.setId(t.getId());
         s.setPersonName(t.getPersonName());

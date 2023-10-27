@@ -1,10 +1,11 @@
 package com.example.account.service;
 
-import com.example.account.GenericMappersMethods;
+import com.example.account.helper.Mappers;
 import com.example.account.api.transaction.GetTransactionsByTransferDateRequest;
 import com.example.account.api.transaction.GetTransactionsByTransferDateResult;
 import com.example.account.api.transaction.*;
 import com.example.account.builder.TransactionBuilder;
+import com.example.account.comon.UtilAccount;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
@@ -12,7 +13,6 @@ import com.example.account.domain.TransactionInfo;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
-import commons.UtilAccount;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,7 +94,7 @@ public class TransactionService {
 
     private TransactionResult transactionsMapper(Transaction transaction) {
         TransactionResult result = new TransactionResult();
-        GenericMappersMethods.transactionMapper(transaction, result);
+        Mappers.transactionMapper(transaction, result);
 
         return result;
     }

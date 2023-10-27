@@ -1,16 +1,16 @@
 package com.example.account.service;
 
-import com.example.account.GenericMappersMethods;
+import com.example.account.helper.Mappers;
 import com.example.account.api.account.*;
 import com.example.account.builder.AccountInfoBuilder;
 import com.example.account.builder.TransactionBuilder;
+import com.example.account.comon.UtilAccount;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
-import commons.UtilAccount;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +58,7 @@ public class AccountInfoService {
 
     private GetAccountInfoDetailResult accountInfosMapper(AccountInfo accountInfo) {
         GetAccountInfoDetailResult result = new GetAccountInfoDetailResult();
-        result = GenericMappersMethods.accountInfoMapper(accountInfo, result);
+        result = Mappers.accountInfoMapper(accountInfo, result);
 
         return result;
     }
@@ -70,7 +70,7 @@ public class AccountInfoService {
         }
 
         GetAccountInfoByAccountNumberResult result = new GetAccountInfoByAccountNumberResult();
-        result = GenericMappersMethods.accountInfoMapper(accountInfo, result);
+        result = Mappers.accountInfoMapper(accountInfo, result);
 
         return result;
     }

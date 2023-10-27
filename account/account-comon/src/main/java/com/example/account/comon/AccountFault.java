@@ -1,4 +1,4 @@
-package commons;
+package com.example.account.comon;
 
 import java.io.Serializable;
 
@@ -13,4 +13,3 @@ public class AccountFault implements Serializable {
         this.code = code;
     }
 }
-

@@ -1,12 +1,13 @@
 package com.example.account.service;
 
-import com.example.account.GenericMappersMethods;
+import com.example.account.helper.Mappers;
 import com.example.account.api.person.*;
 import com.example.account.builder.PersonBuilder;
+import com.example.account.comon.AccountErrorsStatic;
+import com.example.account.comon.AccountException;
 import com.example.account.domain.Person;
 import com.example.account.repository.PersonRepository;
-import commons.AccountErrorsStatic;
-import commons.AccountException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class PersonService {
         }
         Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).get();
         GetPersonByNationalCodeResult result = new GetPersonByNationalCodeResult();
-        result = GenericMappersMethods.personMapper(person, result);
+        result = Mappers.personMapper(person, result);
 
         return result;
     }
@@ -82,14 +83,14 @@ public class PersonService {
             // shakhsi ba in shomare hesab yaft nashod
         }
         GetPersonByAccountNumberResult result = new GetPersonByAccountNumberResult();
-        result = GenericMappersMethods.personMapper(person, result);
+        result = Mappers.personMapper(person, result);
 
         return result;
     }
 
     private GetPersonDetailResult personsMapper(Person person) {
         GetPersonDetailResult result = new GetPersonDetailResult();
-        result = GenericMappersMethods.personMapper(person, result);
+        result = Mappers.personMapper(person, result);
 
         return result;
     }

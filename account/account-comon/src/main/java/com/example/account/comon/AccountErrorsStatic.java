@@ -1,4 +1,4 @@
-package commons;
+package com.example.account.comon;
 
 public class AccountErrorsStatic {
     private AccountErrorsStatic() {
