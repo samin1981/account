@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public abstract class BaseWS {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(AccountException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseBody
     public void handleAccountError(AccountException ex, ServletResponse servletResponse) throws IOException {
 
