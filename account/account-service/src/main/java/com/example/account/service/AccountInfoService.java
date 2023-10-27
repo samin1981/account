@@ -1,5 +1,7 @@
 package com.example.account.service;
 
+import com.example.account.comon.AccountErrorsStatic;
+import com.example.account.comon.AccountException;
 import com.example.account.helper.Mappers;
 import com.example.account.api.account.*;
 import com.example.account.builder.AccountInfoBuilder;
@@ -47,18 +49,11 @@ public class AccountInfoService {
     public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
 
         GetAllAccountInfosResult result = new GetAllAccountInfosResult();
-        List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream().map(this::accountInfosMapper).collect(Collectors.toList());
+        List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream().map(Mappers::accountInfosMapper).collect(Collectors.toList());
         if (accountInfos.isEmpty() && accountInfos.size() == 0) {
-
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, null);
         }
         result.setItems(accountInfos);
-
-        return result;
-    }
-
-    private GetAccountInfoDetailResult accountInfosMapper(AccountInfo accountInfo) {
-        GetAccountInfoDetailResult result = new GetAccountInfoDetailResult();
-        result = Mappers.accountInfoMapper(accountInfo, result);
 
         return result;
     }
@@ -66,7 +61,7 @@ public class AccountInfoService {
     public GetAccountInfoByAccountNumberResult getAccountInfoByAccountNumber(GetAccountInfoByAccountNumberRequest request) {
         AccountInfo accountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
         if (accountInfo == null) {
-            //shomare hesab yaft nashod
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, request.getAccountNumber());
         }
 
         GetAccountInfoByAccountNumberResult result = new GetAccountInfoByAccountNumberResult();
@@ -80,15 +75,15 @@ public class AccountInfoService {
 
         BigDecimal newAmount = new BigDecimal(amountForOpenAccount.longValue());
         if (request.getAmount().compareTo(newAmount) < 0) {
-            //baraye eftetahe hesab hadeaghal 100 rial niaz ast
+            throw new AccountException(AccountErrorsStatic.ERROR_MIN_AMOUNT_NECESSARY, amountForOpenAccount);
         }
 
         Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
         if (existPerson == null) {
-            //shakhs ba in code melli yaft nashod
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
         }
         if (existPerson.getAccountInfo() != null) {
-            //ghablan sakhs eftetah hesab dashte
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, request.getNationalCode());
         }
 
         String destinationAccountNumber = UtilAccount.generateAccountNumber();

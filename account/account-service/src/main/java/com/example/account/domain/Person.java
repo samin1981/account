@@ -20,6 +20,8 @@ public class Person {
 
     private String phoneNumber;
 
+    private Integer deleted;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_info_id", foreignKey = @ForeignKey(name = "fk_account_info"))
     private AccountInfo accountInfo;
@@ -61,6 +63,14 @@ public class Person {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Integer getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
     }
 
     public AccountInfo getAccountInfo() {

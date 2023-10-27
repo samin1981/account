@@ -8,6 +8,7 @@ public class PersonBuilder {
     private String personName;
     private String nationalCode;
     private String phoneNumber;
+    private Integer deleted;
     private AccountInfo accountInfo;
 
     private PersonBuilder() {
@@ -32,6 +33,11 @@ public class PersonBuilder {
         return this;
     }
 
+    public PersonBuilder deleted(Integer deleted) {
+        this.deleted = deleted;
+        return this;
+    }
+
     public PersonBuilder accountInfo(AccountInfo accountInfo) {
         this.accountInfo = accountInfo;
         return this;
@@ -42,6 +48,7 @@ public class PersonBuilder {
         person.setPersonName(personName);
         person.setPhoneNumber(phoneNumber);
         person.setNationalCode(nationalCode);
+        person.setDeleted(deleted);
         person.setAccountInfo(accountInfo);
 
         return person;

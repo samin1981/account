@@ -1,6 +1,8 @@
 package com.example.account.helper;
 
 import com.example.account.api.account.AccountInfoResult;
+import com.example.account.api.account.GetAccountInfoDetailResult;
+import com.example.account.api.person.GetPersonDetailResult;
 import com.example.account.api.person.PersonResult;
 import com.example.account.api.transaction.TransactionResult;
 import com.example.account.api.transaction.TransactionType;
@@ -10,6 +12,28 @@ import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
 
 public class Mappers {
+
+    public static GetPersonDetailResult personsMapper(Person person) {
+        GetPersonDetailResult result = new GetPersonDetailResult();
+        result = Mappers.personMapper(person, result);
+
+        return result;
+    }
+
+    public static GetAccountInfoDetailResult accountInfosMapper(AccountInfo accountInfo) {
+        GetAccountInfoDetailResult result = new GetAccountInfoDetailResult();
+        result = Mappers.accountInfoMapper(accountInfo, result);
+
+        return result;
+    }
+
+    public static TransactionResult transactionsMapper(Transaction transaction) {
+        TransactionResult result = new TransactionResult();
+        result = Mappers.transactionMapper(transaction, result);
+
+        return result;
+    }
+
     public static <T extends Person, S extends PersonResult> S personMapper(T t, S s) {
         s.setId(t.getId());
         s.setPersonName(t.getPersonName());
@@ -22,6 +46,7 @@ public class Mappers {
 
         return s;
     }
+
     public static <A extends AccountInfo, P extends AccountInfoResult> P accountInfoMapper(A a, P p) {
         p.setId(a.getId());
         p.setAccountNumber(a.getAccountNumber());

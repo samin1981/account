@@ -1,5 +1,7 @@
 package com.example.account.service;
 
+import com.example.account.comon.AccountErrorsStatic;
+import com.example.account.comon.AccountException;
 import com.example.account.helper.Mappers;
 import com.example.account.api.transaction.GetTransactionsByTransferDateRequest;
 import com.example.account.api.transaction.GetTransactionsByTransferDateResult;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,9 +45,9 @@ public class TransactionService {
 
     public GetAllTransactionsResult getAllTransactions(GetAllTransactionsRequest request) {
         GetAllTransactionsResult result = new GetAllTransactionsResult();
-        List<TransactionResult> transactions = transactionRepository.findAll().stream().map(this::transactionsMapper).collect(Collectors.toList());
+        List<TransactionResult> transactions = transactionRepository.findAll().stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
         if (transactions.isEmpty() && transactions.size() == 0) {
-            //transaction not found
+            throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
         }
         result.setItems(transactions);
 
@@ -55,10 +58,10 @@ public class TransactionService {
         GetTransactionsBySourceAccountNumberResult result = new GetTransactionsBySourceAccountNumberResult();
 
         List<TransactionResult> transactions = transactionRepository.findTransactionsBySourceAccountNumber(request.getAccountNumber())
-                .stream().map(this::transactionsMapper).collect(Collectors.toList());
+                .stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
-            //transactions not found
+            throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, request.getAccountNumber());
         }
         result.setItems(transactions);
 
@@ -69,10 +72,10 @@ public class TransactionService {
         GetTransactionsByDestAccountNumberResult result = new GetTransactionsByDestAccountNumberResult();
 
         List<TransactionResult> transactions = transactionRepository.findTransactionsByDestinationAccountNumber(request.getAccountNumber())
-                .stream().map(this::transactionsMapper).collect(Collectors.toList());
+                .stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
-            //transactions not found
+            throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
         }
         result.setItems(transactions);
 
@@ -82,53 +85,46 @@ public class TransactionService {
     public GetTransactionsByTransferDateResult getTransactionsByTransferDate(GetTransactionsByTransferDateRequest request) {
         GetTransactionsByTransferDateResult result = new GetTransactionsByTransferDateResult();
         List<TransactionResult> transactions = transactionRepository.findTransactionsByTransferDate(request.getTransferDate())
-                .stream().map(this::transactionsMapper).collect(Collectors.toList());
+                .stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
-            //transactions not found
+            throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
         }
         result.setItems(transactions);
 
         return result;
     }
 
-    private TransactionResult transactionsMapper(Transaction transaction) {
-        TransactionResult result = new TransactionResult();
-        Mappers.transactionMapper(transaction, result);
-
-        return result;
-    }
 
     public InternalTransferResult internalTransfer(InternalTransferRequest request) {
         InternalTransferResult result = new InternalTransferResult();
 
         AccountInfo sourceAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getSourceAccountNumber());
         if (sourceAccountInfo == null) {
-            //shomare hesabe mabda vojood nadarasd
+            throw new AccountException(AccountErrorsStatic.ERROR_SRC_ACCOUNT_NUMBER_NOT_FOUND, sourceAccountInfo.getAccountNumber());
         }
 
-        Person sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
+        Optional sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode());
         if (sourcePerson == null) {
-            //shakhs ba in shomare melli yaft nashod
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_EXIST, request.getNationalCode());
         }
 
-        if (!sourcePerson.getAccountInfo().equals(sourceAccountInfo)) {
-            // in hesab moteallegh be in shakhs nemibashad
+        Person person = (Person) sourcePerson.get();
+        if (!person.getAccountInfo().equals(sourceAccountInfo)) {
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_DOES_NOT_BELONG_PERSON, request.getSourceAccountNumber(), person.getNationalCode());
         }
         if (request.getAmount().compareTo(sourceAccountInfo.getBalance()) == 1) {
-            // mojoodi nakafi ast
+            throw new AccountException(AccountErrorsStatic.ERROR_INSUFFICIENT_BALANCE, request.getSourceAccountNumber());
         }
 
         AccountInfo destAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getDestinationAccountNumber());
         if (destAccountInfo == null) {
-            //shomare hesabe maghsad vojood nadarasd
+            throw new AccountException(AccountErrorsStatic.ERROR_DEST_ACCOUNT_INFO_NOT_FOUND, request.getDestinationAccountNumber());
         }
 
         Person destinationPerson = personRepository.findPersonByAccountInfo(destAccountInfo.getAccountNumber());
         if (destinationPerson == null) {
-            //shakhs ba shomare hesab ... yaft nashod
-        } else {
-            // in shomare hesab moteallegh be shakhs dest mibashad
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_EXIST, destAccountInfo.getAccountNumber());
         }
 
         sourceAccountInfo.setAmount(request.getAmount());
@@ -164,17 +160,15 @@ public class TransactionService {
 
         AccountInfo destAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
         if (destAccountInfo == null) {
-            //hesabe vojood nadarad
+            throw new AccountException(AccountErrorsStatic.ERROR_DEST_ACCOUNT_INFO_NOT_FOUND);
         }
 
         Person destPerson = personRepository.findPersonByAccountInfo(destAccountInfo.getAccountNumber());
-        if (destPerson != null) {
-            //in shomare hesab motealegh be ... ast
-        } else {
-            //shakhs ba in shomare hesab yaft nashod
+        if (destPerson == null) {
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, destAccountInfo.getAccountNumber());
         }
         if (request.getAmount() == null) {
-            //mablagh nemitavanad sefr bashad
+            throw new AccountException(AccountErrorsStatic.ERROR_AMOUNT_CAN_NOT_BE_ZERO, request.getAmount());
         }
 
         destAccountInfo.setAmount(request.getAmount());
@@ -205,19 +199,20 @@ public class TransactionService {
 
         AccountInfo sourceAccountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
         if (sourceAccountInfo == null) {
-            //shomare hesabe mabda vojood nadarasd
+            throw new AccountException(AccountErrorsStatic.ERROR_SRC_ACCOUNT_NUMBER_NOT_FOUND, request.getAccountNumber());
         }
 
-        Person sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
-        if (sourcePerson == null) {
-            //shakhs ba in shomare melli yaft nashod
+        Optional sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode());
+        if (sourcePerson.isEmpty()) {
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
         }
+        Person exictPerson = (Person) sourcePerson.get();
 
-        if (!sourcePerson.getAccountInfo().equals(sourceAccountInfo)) {
-            // in hesab moteallegh be in shakhs nemibashad
+        if (!exictPerson.getAccountInfo().equals(sourceAccountInfo)) {
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_DOES_NOT_BELONG_PERSON, sourceAccountInfo.getAccountNumber(), exictPerson.getNationalCode());
         }
         if (request.getAmount().compareTo(sourceAccountInfo.getBalance()) == 1) {
-            // mojoodi nakafi ast
+            throw new AccountException(AccountErrorsStatic.ERROR_INSUFFICIENT_BALANCE, sourceAccountInfo.getBalance());
         }
 
         sourceAccountInfo.setAmount(request.getAmount());
@@ -248,7 +243,7 @@ public class TransactionService {
         GetOpenAccountTransactionsResult result = new GetOpenAccountTransactionsResult();
         List<TransactionInfo> customTransactions = transactionRepository.getOpenAccountTransactions(openAccountSign);
 
-        List<GetOpenAccountTransactionsResultItem> items = customTransactions.stream().map(c-> {
+        List<GetOpenAccountTransactionsResultItem> items = customTransactions.stream().map(c -> {
             GetOpenAccountTransactionsResultItem item = new GetOpenAccountTransactionsResultItem();
             item.setId(c.getId());
             item.setAmount(c.getAmount());
@@ -261,7 +256,6 @@ public class TransactionService {
         result.setItems(items);
         return result;
     }
-
 
 
 }

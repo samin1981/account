@@ -5,6 +5,8 @@ import com.example.account.api.facility.GetFacilityResult;
 import com.example.account.api.facility.ConditionForFacilityRequest;
 import com.example.account.api.facility.GetFacilityResultItem;
 import com.example.account.builder.FacilityBuilder;
+import com.example.account.comon.AccountErrorsStatic;
+import com.example.account.comon.AccountException;
 import com.example.account.comon.UtilAccount;
 import com.example.account.domain.*;
 import com.example.account.repository.AccountInfoRepository;
@@ -53,27 +55,30 @@ public class FacilityService {
     }
 
     public void conditionForFacility(ConditionForFacilityRequest request) {
-        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
-        if (person == null) {
-            // shakhs dar system vojood nadarad
+        Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
+        if (person.isEmpty()) {
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
         }
-        List<AccountInfo> accountInfos = accountInfoRepository.getAccountInfosByNationalcode(person.getNationalCode());
+        Person existPerson = (Person) person.get();
+        List<AccountInfo> accountInfos = accountInfoRepository.getAccountInfosByNationalcode(existPerson.getNationalCode());
         if (accountInfos == null) {
-            //shomare hesabi yaft nashod
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, request.getNationalCode());
         }
 
         float halfAmountForFacility = amountForFacility / 2;
         Optional<AccountInfo> suitableAccountInfo = accountInfos.stream().filter(c -> c.getBalance().compareTo(BigDecimal.valueOf(halfAmountForFacility)) > 0).findFirst();
+
         if (suitableAccountInfo.isEmpty()) {
-            // shomare hesab sharayete akhz vam ra be dalile mande hesab nadarad
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_CAN_NOT_GET_FACILITY_BECAUSE_OF_BALANCE, halfAmountForFacility);
         }
+
         AccountInfo accountInfoWithSuitableBalance = suitableAccountInfo.get();
 
         Date threeMonthAgo = UtilAccount.beforeMonths(3);
         List<Transaction> transaction = transactionRepository.getByAccountNumberAndTransferDateAndBalance(accountInfoWithSuitableBalance.getAccountNumber(),
                 threeMonthAgo, new Date(), BigDecimal.valueOf(halfAmountForFacility));
         if (transaction != null) {
-//             in shakhs be dalile bardasht az hesab mojaz be gereftane vam nemibashad
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_CAN_NOT_GET_FACILITY_BECAUSE_OF_WITHDRAW, null);
         }
     }
 
@@ -82,12 +87,12 @@ public class FacilityService {
 
         AccountInfo accountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getFacilityAccountNumber());
         if (accountInfo == null) {
-            //hesabi baraye akhz vam eftetah nashode ast
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_IS_NOT_OPEN_FOR_GET_FACILITY, null);
         }
 
         Person person = personRepository.findPersonByAccountInfo(accountInfo.getAccountNumber());
         if (person == null) {
-            //
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, accountInfo.getAccountNumber());
         }
 
         float amountForReturn = UtilAccount.getAmountForReturn(amountForFacility, percent);

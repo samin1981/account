@@ -33,36 +33,36 @@ public class PersonService {
     public GetAllPersonsResult getAllPersons(GetAllPersonsRequest request) {
         GetAllPersonsResult result = new GetAllPersonsResult();
 
-        List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAll().stream().map(this::personsMapper).collect(Collectors.toList());
+        List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAllByDeleted().stream().map(Mappers::personsMapper).collect(Collectors.toList());
         if (persons.isEmpty() && persons.size() == 0) {
-            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND);
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, null);
         }
         result.setItems(persons);
         return result;
     }
 
-
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
-
-        if (personRepository.findPersonByNationalCode(request.getNationalCode()).isEmpty()) {
-            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_PERSON_NOT_FOUND, request.getNationalCode());
+        Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
+        if (person.isEmpty()) {
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
         }
-        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).get();
+        Person exictPerson = (Person) person.get();
         GetPersonByNationalCodeResult result = new GetPersonByNationalCodeResult();
-        result = Mappers.personMapper(person, result);
+        result = Mappers.personMapper(exictPerson, result);
 
         return result;
     }
 
     public void addPerson(AddPersonRequest request) {
         Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
-        if (person != null) {
-            //person ghablan dar system sabt shode ast
+        if (person.isPresent()) {
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_EXIST, request.getNationalCode());
         }
         Person newPerson = PersonBuilder.getInstance()
                 .personName(request.getPersonName())
                 .phoneNumber(request.getPhoneNumber())
                 .nationalCode(request.getNationalCode())
+                .deleted(0)
                 .accountInfo(null)
                 .build();
 
@@ -70,17 +70,19 @@ public class PersonService {
     }
 
     public void removePersonByNationalCode(RemovePersonByNationalCodeRequest request) {
-        Person person = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
-        if (person == null) {
-            //person yaft nashod
+        Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
+        if (person.isEmpty()) {
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
         }
-        personRepository.delete(person);
+        Person exictPerson = (Person) person.get();
+        personRepository.removePersonById(exictPerson.getId());
+        personRepository.save(exictPerson);
     }
 
     public GetPersonByAccountNumberResult getPersonByAccountNumber(GetPersonByAccountNumberRequest request) {
         Person person = personRepository.findPersonByAccountInfo(request.getAccountNumber());
         if (person == null) {
-            // shakhsi ba in shomare hesab yaft nashod
+            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, request.getAccountNumber());
         }
         GetPersonByAccountNumberResult result = new GetPersonByAccountNumberResult();
         result = Mappers.personMapper(person, result);
@@ -88,10 +90,5 @@ public class PersonService {
         return result;
     }
 
-    private GetPersonDetailResult personsMapper(Person person) {
-        GetPersonDetailResult result = new GetPersonDetailResult();
-        result = Mappers.personMapper(person, result);
 
-        return result;
-    }
 }
