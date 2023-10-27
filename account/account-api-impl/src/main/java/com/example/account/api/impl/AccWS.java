@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/accApi")
-public class AccWS implements AccAPI {
+public class AccWS extends BaseWS implements AccAPI {
     private final PersonService personService;
     private final AccountInfoService accountInfoService;
     private final TransactionService transactionService;
