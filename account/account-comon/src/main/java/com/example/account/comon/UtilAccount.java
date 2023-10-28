@@ -59,4 +59,20 @@ public class UtilAccount {
     public static float getLateFineAmountForOneDay(float amountForReturn, float yearlyFinePercent) {
         return ((amountForReturn * yearlyFinePercent) / 100) / 365;
     }
+
+    public static String maskAccountNumber(String accountNumber) {
+        if (accountNumber.length() != 13) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder(accountNumber);
+        return sb.substring(0, 3).concat("****").concat(sb.substring(7, 13));
+    }
+
+    public static String maskNationalCode(String nationalCode) {
+        if (nationalCode.length() != 10) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder(nationalCode);
+        return sb.substring(0, 3).concat("***").concat(sb.substring(6, 10));
+    }
 }

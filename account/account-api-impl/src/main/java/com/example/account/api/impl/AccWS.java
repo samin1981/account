@@ -41,7 +41,6 @@ public class AccWS extends BaseWS implements AccAPI {
     public GetAllPersonsResult getAllPersons(GetAllPersonsRequest request) {
         return personService.getAllPersons(request);
     }
-
     @Override
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
         return personService.getPersonByNationalCode(request);
@@ -86,17 +85,14 @@ public class AccWS extends BaseWS implements AccAPI {
     public GetTransactionsBySourceAccountNumberResult getTransactionsBySourceAccountNumber(GetTransactionsBySourceAccountNumberRequest request) {
         return transactionService.getTransactionsBySourceAccountNumber(request);
     }
-
     @Override
     public GetTransactionsByDestAccountNumberResult getTransactionsByDestAccountNumber(GetTransactionsByDestAccountNumberRequest request) {
         return transactionService.getTransactionsByDestAccountNumber(request);
     }
-
     @Override
     public GetTransactionsByTransferDateResult getTransactionsByTransferDate(GetTransactionsByTransferDateRequest request) {
         return transactionService.getTransactionsByTransferDate(request);
     }
-
     @Override
     public InternalTransferResult internalTransfer(InternalTransferRequest request) {
         return transactionService.internalTransfer(request);
@@ -109,13 +105,11 @@ public class AccWS extends BaseWS implements AccAPI {
     public CashWithdrawResult cashWithdraw(CashWithdrawRequest request) {
         return transactionService.cashWithdraw(request);
     }
-
     @Override
     public ConditionForFacilityResult conditionForFacility(ConditionForFacilityRequest request) {
         facilityService.conditionForFacility(request);
         return new ConditionForFacilityResult(true);
     }
-
     @Override
     public GetFacilityResult getFacility(GetFacilityRequest request) {
         return facilityService.getFacility(request);

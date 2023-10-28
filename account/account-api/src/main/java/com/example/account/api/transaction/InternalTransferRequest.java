@@ -7,15 +7,12 @@ import java.math.BigDecimal;
 public class InternalTransferRequest {
     @NotNull
     private BigDecimal amount;
-
     @NotNull
     @Pattern(regexp = "\\d{10}")
     private String nationalCode;
-
     @NotNull
     @Pattern(regexp = "\\d{13}")
     private String sourceAccountNumber;
-
     @NotNull
     @Pattern(regexp = "\\{13}")
     private String destinationAccountNumber;

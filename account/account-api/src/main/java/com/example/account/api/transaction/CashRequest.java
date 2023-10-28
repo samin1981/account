@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 public class CashRequest {
     @NotNull
     private BigDecimal amount;
-
     @NotNull
     @Pattern(regexp = "\\d{13}")
     private String accountNumber;

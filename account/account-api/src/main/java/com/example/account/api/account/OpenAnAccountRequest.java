@@ -8,7 +8,6 @@ public class OpenAnAccountRequest {
     @NotNull
     @Pattern(regexp = "\\d{10}")
     private String nationalCode;
-
     @NotNull
     private BigDecimal amount;
 

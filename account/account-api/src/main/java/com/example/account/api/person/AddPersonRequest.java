@@ -4,9 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class AddPersonRequest {
-
     private String personName;
-
     @NotNull
     @Pattern(regexp = "\\d{10}")
     private String nationalCode;
