@@ -2,10 +2,16 @@ package com.example.account.api.transaction;
 
 import com.example.account.api.transaction.TransferType;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 
 public class CashRequest {
+    @NotNull
     private BigDecimal amount;
+
+    @NotNull
+    @Pattern(regexp = "\\d{13}")
     private String accountNumber;
     private TransferType transferType;
 

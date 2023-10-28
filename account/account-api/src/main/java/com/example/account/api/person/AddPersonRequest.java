@@ -7,7 +7,7 @@ public class AddPersonRequest {
 
     private String personName;
 
-    @NotNull/*(message = "nationalCode may not be null.")*/
+    @NotNull
     @Pattern(regexp = "\\d{10}")
     private String nationalCode;
 

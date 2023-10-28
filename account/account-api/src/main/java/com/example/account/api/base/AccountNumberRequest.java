@@ -1,7 +1,11 @@
 package com.example.account.api.base;
 
-public class AccountNumberRequest {
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
+public class AccountNumberRequest {
+    @NotNull
+    @Pattern(regexp = "\\d{13}")
     public String accountNumber;
 
     public String getAccountNumber() {
