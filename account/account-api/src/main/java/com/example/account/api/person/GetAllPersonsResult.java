@@ -2,6 +2,7 @@ package com.example.account.api.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class GetAllPersonsResult {
     private List<GetPersonDetailResult> items = new ArrayList<>();
@@ -16,9 +17,9 @@ public class GetAllPersonsResult {
 
     @Override
     public String toString() {
-        return "GetAllPersonsResult{" +
-                "items=" + items +
-                '}';
+        return new StringJoiner(", ", "[", "]")
+                .add("items=        " + items)
+                .toString();
     }
 }
 

@@ -1,7 +1,10 @@
 package com.example.account.api.transaction;
 
+import com.example.account.comon.UtilAccount;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.StringJoiner;
 
 public class GetOpenAccountTransactionsResultItem {
     private Integer id;
@@ -39,5 +42,15 @@ public class GetOpenAccountTransactionsResultItem {
 
     public void setTransferDate(Date transferDate) {
         this.transferDate = transferDate;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", "[", "]")
+                .add("id=        " + id)
+                .add("destinationAccountNumber=        '" + UtilAccount.maskAccountNumber(destinationAccountNumber) + "'")
+                .add("amount=        " + UtilAccount.maskNumber(amount))
+                .add("transferDate=        " + transferDate)
+                .toString();
     }
 }

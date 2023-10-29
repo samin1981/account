@@ -1,7 +1,10 @@
 package com.example.account.api.transaction;
 
+import com.example.account.comon.UtilAccount;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.StringJoiner;
 
 public class TransactionResult {
     private Integer id;
@@ -93,5 +96,21 @@ public class TransactionResult {
 
     public void setSrcTransferType(TransferType srcTransferType) {
         this.srcTransferType = srcTransferType;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", "[", "]")
+                .add("id=        " + id)
+                .add("sourceAccountNumber=        '" + UtilAccount.maskAccountNumber(sourceAccountNumber) + "'")
+                .add("destinationAccountNumber=        '" + UtilAccount.maskAccountNumber(destinationAccountNumber) + "'")
+                .add("amount=        " + UtilAccount.maskNumber(amount))
+                .add("srcBalance=        " + UtilAccount.maskNumber(srcBalance))
+                .add("destBalance=        " + UtilAccount.maskNumber(destBalance))
+                .add("transferDate=        " + transferDate)
+                .add("trackingCode=        '" + trackingCode + "'")
+                .add("transactionType=        " + transactionType)
+                .add("srcTransferType=        " + srcTransferType)
+                .toString();
     }
 }

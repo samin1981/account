@@ -1,7 +1,10 @@
 package com.example.account.api.facility;
 
+import com.example.account.comon.UtilAccount;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.StringJoiner;
 
 public class GetFacilityResultItem {
     private BigDecimal creditAmount;
@@ -39,5 +42,15 @@ public class GetFacilityResultItem {
 
     public void setFirsPaymentDate(Date firsPaymentDate) {
         this.firsPaymentDate = firsPaymentDate;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", "[", "]")
+                .add("creditAmount=        " + UtilAccount.maskNumber(creditAmount))
+                .add("paymentAmount=        " + paymentAmount)
+                .add("creditDate=        " + creditDate)
+                .add("firsPaymentDate=        " + firsPaymentDate)
+                .toString();
     }
 }

@@ -1,7 +1,10 @@
 package com.example.account.api.person;
 
+import com.example.account.comon.UtilAccount;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.StringJoiner;
 
 public class AddPersonRequest {
     private String personName;
@@ -38,10 +41,10 @@ public class AddPersonRequest {
 
     @Override
     public String toString() {
-        return "AddPersonRequest{" +
-                "personName='" + personName + '\'' +
-                ", nationalCode='" + nationalCode + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
+        return new StringJoiner(", ", "[", "]")
+                .add("personName=        '" + personName + "'")
+                .add("nationalCode=        '" + UtilAccount.maskNationalCode(nationalCode) + "'")
+                .add("phoneNumber=        '" + phoneNumber + "'")
+                .toString();
     }
 }

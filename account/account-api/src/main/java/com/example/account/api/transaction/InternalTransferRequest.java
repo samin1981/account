@@ -1,5 +1,7 @@
 package com.example.account.api.transaction;
 
+import com.example.account.comon.UtilAccount;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
@@ -14,7 +16,7 @@ public class InternalTransferRequest {
     @Pattern(regexp = "\\d{13}")
     private String sourceAccountNumber;
     @NotNull
-    @Pattern(regexp = "\\{13}")
+    @Pattern(regexp = "\\d{13}")
     private String destinationAccountNumber;
     public BigDecimal getAmount() {
         return amount;
@@ -51,9 +53,9 @@ public class InternalTransferRequest {
     public String toString() {
         return "InternalTransferRequest{" +
                 "amount=" + amount +
-                ", nationalCode='" + nationalCode + '\'' +
-                ", fromAccountNumber='" + sourceAccountNumber + '\'' +
-                ", toAccountNumber='" + destinationAccountNumber + '\'' +
+                ", nationalCode='" + UtilAccount.maskNationalCode(nationalCode) + '\'' +
+                ", fromAccountNumber='" + UtilAccount.maskAccountNumber(sourceAccountNumber) + '\'' +
+                ", toAccountNumber='" + UtilAccount.maskAccountNumber(destinationAccountNumber) + '\'' +
                 '}';
     }
 }

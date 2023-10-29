@@ -1,10 +1,12 @@
 package com.example.account.api.transaction;
 
 import com.example.account.api.transaction.TransferType;
+import com.example.account.comon.UtilAccount;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
+import java.util.StringJoiner;
 
 public class CashRequest {
     @NotNull
@@ -36,5 +38,14 @@ public class CashRequest {
 
     public void setTransferType(TransferType transferType) {
         this.transferType = transferType;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", "[", "]")
+                .add("amount=        " + amount)
+                .add("accountNumber=        '" + UtilAccount.maskAccountNumber(accountNumber) + "'")
+                .add("transferType=        " + transferType)
+                .toString();
     }
 }

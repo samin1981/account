@@ -46,7 +46,7 @@ public class AccountInfoService {
         this.transactionRepository = transactionRepository;
     }
 
-    public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
+    public GetAllAccountInfosResult getAllAccountInfos() {
 
         GetAllAccountInfosResult result = new GetAllAccountInfosResult();
         List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream().map(Mappers::accountInfosMapper).collect(Collectors.toList());
@@ -78,10 +78,9 @@ public class AccountInfoService {
             throw new AccountException(AccountErrorsStatic.ERROR_MIN_AMOUNT_NECESSARY, amountForOpenAccount);
         }
 
-        Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode()).orElseThrow();
-        if (existPerson == null) {
-            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
-        }
+        Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
+                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
+
         if (existPerson.getAccountInfo() != null) {
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, request.getNationalCode());
         }

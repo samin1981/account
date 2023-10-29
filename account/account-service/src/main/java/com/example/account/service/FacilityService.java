@@ -55,11 +55,9 @@ public class FacilityService {
     }
 
     public void conditionForFacility(ConditionForFacilityRequest request) {
-        Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
-        if (person.isEmpty()) {
-            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
-        }
-        Person existPerson = (Person) person.get();
+        Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
+                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
+
         List<AccountInfo> accountInfos = accountInfoRepository.getAccountInfosByNationalcode(existPerson.getNationalCode());
         if (accountInfos == null) {
             throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, request.getNationalCode());

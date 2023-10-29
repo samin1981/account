@@ -30,7 +30,7 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public GetAllPersonsResult getAllPersons(GetAllPersonsRequest request) {
+    public GetAllPersonsResult getAllPersons() {
         GetAllPersonsResult result = new GetAllPersonsResult();
 
         List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAllByDeleted().stream().map(Mappers::personsMapper).collect(Collectors.toList());
@@ -42,13 +42,11 @@ public class PersonService {
     }
 
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
-        Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
-        if (person.isEmpty()) {
-            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
-        }
-        Person exictPerson = (Person) person.get();
+        Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
+                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
+
         GetPersonByNationalCodeResult result = new GetPersonByNationalCodeResult();
-        result = Mappers.personMapper(exictPerson, result);
+        result = Mappers.personMapper(existPerson, result);
 
         return result;
     }
@@ -58,6 +56,7 @@ public class PersonService {
         if (person.isPresent()) {
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_EXIST, request.getNationalCode());
         }
+
         Person newPerson = PersonBuilder.getInstance()
                 .personName(request.getPersonName())
                 .phoneNumber(request.getPhoneNumber())
@@ -70,13 +69,11 @@ public class PersonService {
     }
 
     public void removePersonByNationalCode(RemovePersonByNationalCodeRequest request) {
-        Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
-        if (person.isEmpty()) {
-            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
-        }
-        Person exictPerson = (Person) person.get();
-        personRepository.removePersonById(exictPerson.getId());
-        personRepository.save(exictPerson);
+        Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
+                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
+
+        personRepository.removePersonById(existPerson.getId());
+        personRepository.save(existPerson);
     }
 
     public GetPersonByAccountNumberResult getPersonByAccountNumber(GetPersonByAccountNumberRequest request) {

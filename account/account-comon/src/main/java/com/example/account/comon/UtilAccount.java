@@ -1,5 +1,6 @@
 package com.example.account.comon;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -75,4 +76,21 @@ public class UtilAccount {
         StringBuilder sb = new StringBuilder(nationalCode);
         return sb.substring(0, 3).concat("***").concat(sb.substring(6, 10));
     }
+
+    public static String maskNumber(BigDecimal number) {
+        if (number.equals(new BigDecimal(0))) {
+            return null;
+        }
+        int total = number.toString().length();
+        int startlen=4,endlen = 4;
+        int masklen = total-(startlen + endlen) ;
+        StringBuffer maskedbuf = new StringBuffer(number.toString().substring(0,startlen));
+        for(int i=0;i<masklen;i++) {
+            maskedbuf.append("*");
+        }
+        maskedbuf.append(number.toString().substring(startlen+masklen, total));
+        String masked = maskedbuf.toString();
+        return masked;
+    }
+
 }

@@ -43,7 +43,7 @@ public class TransactionService {
         this.accountInfoRepository = accountInfoRepository;
     }
 
-    public GetAllTransactionsResult getAllTransactions(GetAllTransactionsRequest request) {
+    public GetAllTransactionsResult getAllTransactions() {
         GetAllTransactionsResult result = new GetAllTransactionsResult();
         List<TransactionResult> transactions = transactionRepository.findAll().stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
         if (transactions.isEmpty() && transactions.size() == 0) {
@@ -104,14 +104,11 @@ public class TransactionService {
             throw new AccountException(AccountErrorsStatic.ERROR_SRC_ACCOUNT_NUMBER_NOT_FOUND, sourceAccountInfo.getAccountNumber());
         }
 
-        Optional sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode());
-        if (sourcePerson == null) {
-            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_EXIST, request.getNationalCode());
-        }
+        Person sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode())
+                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
 
-        Person person = (Person) sourcePerson.get();
-        if (!person.getAccountInfo().equals(sourceAccountInfo)) {
-            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_DOES_NOT_BELONG_PERSON, request.getSourceAccountNumber(), person.getNationalCode());
+        if (!sourcePerson.getAccountInfo().equals(sourceAccountInfo)) {
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_DOES_NOT_BELONG_PERSON, request.getSourceAccountNumber(), sourcePerson.getNationalCode());
         }
         if (request.getAmount().compareTo(sourceAccountInfo.getBalance()) == 1) {
             throw new AccountException(AccountErrorsStatic.ERROR_INSUFFICIENT_BALANCE, request.getSourceAccountNumber());
@@ -202,14 +199,11 @@ public class TransactionService {
             throw new AccountException(AccountErrorsStatic.ERROR_SRC_ACCOUNT_NUMBER_NOT_FOUND, request.getAccountNumber());
         }
 
-        Optional sourcePerson = personRepository.findPersonByNationalCode(request.getNationalCode());
-        if (sourcePerson.isEmpty()) {
-            throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
-        }
-        Person exictPerson = (Person) sourcePerson.get();
+        Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
+                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
 
-        if (!exictPerson.getAccountInfo().equals(sourceAccountInfo)) {
-            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_DOES_NOT_BELONG_PERSON, sourceAccountInfo.getAccountNumber(), exictPerson.getNationalCode());
+        if (!existPerson.getAccountInfo().equals(sourceAccountInfo)) {
+            throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_DOES_NOT_BELONG_PERSON, sourceAccountInfo.getAccountNumber(), existPerson.getNationalCode());
         }
         if (request.getAmount().compareTo(sourceAccountInfo.getBalance()) == 1) {
             throw new AccountException(AccountErrorsStatic.ERROR_INSUFFICIENT_BALANCE, sourceAccountInfo.getBalance());

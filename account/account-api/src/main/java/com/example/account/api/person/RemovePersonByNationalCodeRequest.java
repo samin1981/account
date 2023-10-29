@@ -1,7 +1,10 @@
 package com.example.account.api.person;
 
+import com.example.account.comon.UtilAccount;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.StringJoiner;
 
 public class RemovePersonByNationalCodeRequest {
     @NotNull
@@ -18,8 +21,8 @@ public class RemovePersonByNationalCodeRequest {
 
     @Override
     public String toString() {
-        return "RemovePersonRequest{" +
-                "nationalCode='" + nationalCode + '\'' +
-                '}';
+        return new StringJoiner(", ", "[", "]")
+                .add("nationalCode=        '" + UtilAccount.maskNationalCode(nationalCode) + "'")
+                .toString();
     }
 }

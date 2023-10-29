@@ -39,7 +39,7 @@ public class AccWS extends BaseWS implements AccAPI {
     // persons
     @Override
     public GetAllPersonsResult getAllPersons(GetAllPersonsRequest request) {
-        return personService.getAllPersons(request);
+        return personService.getAllPersons();
     }
     @Override
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
@@ -66,7 +66,7 @@ public class AccWS extends BaseWS implements AccAPI {
     }
     @Override
     public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
-        return accountInfoService.getAllAccountInfos(request);
+        return accountInfoService.getAllAccountInfos();
     }
     @Override
     public GetAccountInfoByAccountNumberResult getAccountInfoByAccountNumber(GetAccountInfoByAccountNumberRequest request) {
@@ -75,7 +75,7 @@ public class AccWS extends BaseWS implements AccAPI {
     // Transactions
     @Override
     public GetAllTransactionsResult getAllTransactions(GetAllTransactionsRequest request) {
-        return transactionService.getAllTransactions(request);
+        return transactionService.getAllTransactions();
     }
     @Override
     public GetOpenAccountTransactionsResult getOpenAccountTransactions(GetOpenAccountTransactionsRequest request) {
