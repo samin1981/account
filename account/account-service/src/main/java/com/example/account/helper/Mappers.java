@@ -12,6 +12,8 @@ import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
+
 @Component
 public class Mappers {
 
@@ -37,43 +39,54 @@ public class Mappers {
     }
 
     public <T extends Person, S extends PersonResult> S personMapper(T t, S s) {
-        s.setId(t.getId());
-        s.setPersonName(t.getPersonName());
-        s.setNationalCode(t.getNationalCode());
-        s.setPhoneNumber(t.getPhoneNumber());
-        if (t.getAccountInfo() != null) {
-            AccountInfoResult result = new AccountInfoResult();
-            s.setAccountInfo(accountInfoMapper(t.getAccountInfo(), result));
-        }
+        Function<T, S> function = c -> {
+            s.setId(t.getId());
+            s.setPersonName(t.getPersonName());
+            s.setNationalCode(t.getNationalCode());
+            s.setPhoneNumber(t.getPhoneNumber());
+            if (t.getAccountInfo() != null) {
+                AccountInfoResult result = new AccountInfoResult();
+                s.setAccountInfo(accountInfoMapper(t.getAccountInfo(), result));
+            }
+            return s;
+        };
 
-        return s;
+        return function.apply(t);
     }
 
     public <A extends AccountInfo, P extends AccountInfoResult> P accountInfoMapper(A a, P p) {
-        p.setId(a.getId());
-        p.setAccountNumber(a.getAccountNumber());
-        p.setAmount(a.getAmount());
-        p.setBalance(a.getBalance());
-        p.setTransferType(TransferType.valueOfCode(a.getTransferTypeCode()));
+        Function<A, P> function = c -> {
+            p.setId(a.getId());
+            p.setAccountNumber(a.getAccountNumber());
+            p.setAmount(a.getAmount());
+            p.setBalance(a.getBalance());
+            p.setTransferType(TransferType.valueOfCode(a.getTransferTypeCode()));
 
-        return p;
+            return p;
+        };
+
+        return function.apply(a);
     }
 
     public <K extends Transaction, M extends TransactionResult> M transactionMapper(K k, M m) {
-        m.setId(k.getId());
-        m.setAmount(k.getAmount());
-        m.setSrcBalance(k.getSrcBalance());
-        m.setDestBalance(k.getDestBalance());
-        m.setSourceAccountNumber(k.getSourceAccountNumber());
-        m.setDestinationAccountNumber(k.getDestinationAccountNumber());
-        m.setTransferDate(k.getTransferDate());
-        m.setTrackingCode(k.getTrackingCode());
-        m.setTransactionType(TransactionType.valueOfCode(k.getTransactionTypeCode()));
-        if (k.getSrcTransferTypeCode() != null) {
-            m.setSrcTransferType(TransferType.valueOfCode(k.getSrcTransferTypeCode()));
-        }
+        Function<K, M> function = c -> {
+            m.setId(k.getId());
+            m.setAmount(k.getAmount());
+            m.setSrcBalance(k.getSrcBalance());
+            m.setDestBalance(k.getDestBalance());
+            m.setSourceAccountNumber(k.getSourceAccountNumber());
+            m.setDestinationAccountNumber(k.getDestinationAccountNumber());
+            m.setTransferDate(k.getTransferDate());
+            m.setTrackingCode(k.getTrackingCode());
+            m.setTransactionType(TransactionType.valueOfCode(k.getTransactionTypeCode()));
+            if (k.getSrcTransferTypeCode() != null) {
+                m.setSrcTransferType(TransferType.valueOfCode(k.getSrcTransferTypeCode()));
+            }
 
-        return m;
+            return m;
+        };
+
+      return function.apply(k);
     }
 
 }
