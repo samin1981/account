@@ -10,31 +10,33 @@ import com.example.account.api.transaction.TransferType;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Mappers {
 
-    public static GetPersonDetailResult personsMapper(Person person) {
+    public GetPersonDetailResult personsMapper(Person person) {
         GetPersonDetailResult result = new GetPersonDetailResult();
-        result = Mappers.personMapper(person, result);
+        result = this.personMapper(person, result);
 
         return result;
     }
 
-    public static GetAccountInfoDetailResult accountInfosMapper(AccountInfo accountInfo) {
+    public GetAccountInfoDetailResult accountInfosMapper(AccountInfo accountInfo) {
         GetAccountInfoDetailResult result = new GetAccountInfoDetailResult();
-        result = Mappers.accountInfoMapper(accountInfo, result);
+        result = this.accountInfoMapper(accountInfo, result);
 
         return result;
     }
 
-    public static TransactionResult transactionsMapper(Transaction transaction) {
+    public TransactionResult transactionsMapper(Transaction transaction) {
         TransactionResult result = new TransactionResult();
-        result = Mappers.transactionMapper(transaction, result);
+        result = this.transactionMapper(transaction, result);
 
         return result;
     }
 
-    public static <T extends Person, S extends PersonResult> S personMapper(T t, S s) {
+    public <T extends Person, S extends PersonResult> S personMapper(T t, S s) {
         s.setId(t.getId());
         s.setPersonName(t.getPersonName());
         s.setNationalCode(t.getNationalCode());
@@ -47,7 +49,7 @@ public class Mappers {
         return s;
     }
 
-    public static <A extends AccountInfo, P extends AccountInfoResult> P accountInfoMapper(A a, P p) {
+    public <A extends AccountInfo, P extends AccountInfoResult> P accountInfoMapper(A a, P p) {
         p.setId(a.getId());
         p.setAccountNumber(a.getAccountNumber());
         p.setAmount(a.getAmount());
@@ -57,7 +59,7 @@ public class Mappers {
         return p;
     }
 
-    public static <K extends Transaction, M extends TransactionResult> M transactionMapper(K k, M m) {
+    public <K extends Transaction, M extends TransactionResult> M transactionMapper(K k, M m) {
         m.setId(k.getId());
         m.setAmount(k.getAmount());
         m.setSrcBalance(k.getSrcBalance());

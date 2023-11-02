@@ -1,20 +1,21 @@
 package com.example.account.service;
 
-import com.example.account.comon.AccountErrorsStatic;
-import com.example.account.comon.AccountException;
-import com.example.account.helper.Mappers;
 import com.example.account.api.account.*;
 import com.example.account.builder.AccountInfoBuilder;
 import com.example.account.builder.TransactionBuilder;
+import com.example.account.comon.AccountErrorsStatic;
+import com.example.account.comon.AccountException;
 import com.example.account.comon.UtilAccount;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
+import com.example.account.helper.Mappers;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,9 @@ public class AccountInfoService {
     private final AccountInfoRepository accountInfoRepository;
     private final PersonRepository personRepository;
     private final TransactionRepository transactionRepository;
+
+    @Autowired
+    private Mappers mappers;
 
     @Value("${open.account.sign}")
     private String openAccountSign;
@@ -49,7 +53,8 @@ public class AccountInfoService {
     public GetAllAccountInfosResult getAllAccountInfos() {
 
         GetAllAccountInfosResult result = new GetAllAccountInfosResult();
-        List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream().map(Mappers::accountInfosMapper).collect(Collectors.toList());
+        List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream()
+                .map(accountInfo -> mappers.accountInfosMapper(accountInfo)).collect(Collectors.toList());
         if (accountInfos.isEmpty() && accountInfos.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, null);
         }
@@ -65,7 +70,7 @@ public class AccountInfoService {
         }
 
         GetAccountInfoByAccountNumberResult result = new GetAccountInfoByAccountNumberResult();
-        result = Mappers.accountInfoMapper(accountInfo, result);
+        result = mappers.accountInfoMapper(accountInfo, result);
 
         return result;
     }

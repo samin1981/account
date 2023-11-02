@@ -1,13 +1,12 @@
 package com.example.account.service;
 
-import com.example.account.helper.Mappers;
 import com.example.account.api.person.*;
 import com.example.account.builder.PersonBuilder;
 import com.example.account.comon.AccountErrorsStatic;
 import com.example.account.comon.AccountException;
 import com.example.account.domain.Person;
+import com.example.account.helper.Mappers;
 import com.example.account.repository.PersonRepository;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,9 @@ public class PersonService {
     @Autowired
     private final PersonRepository personRepository;
 
+    @Autowired
+    private Mappers mappers;
+
     public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
@@ -33,7 +35,8 @@ public class PersonService {
     public GetAllPersonsResult getAllPersons() {
         GetAllPersonsResult result = new GetAllPersonsResult();
 
-        List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAllByDeleted().stream().map(Mappers::personsMapper).collect(Collectors.toList());
+        List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAllByDeleted().stream()
+                .map(person -> mappers.personsMapper(person)).collect(Collectors.toList());
         if (persons.isEmpty() && persons.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, null);
         }
@@ -46,7 +49,7 @@ public class PersonService {
                 .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
 
         GetPersonByNationalCodeResult result = new GetPersonByNationalCodeResult();
-        result = Mappers.personMapper(existPerson, result);
+        result = mappers.personMapper(existPerson, result);
 
         return result;
     }
@@ -82,7 +85,7 @@ public class PersonService {
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, request.getAccountNumber());
         }
         GetPersonByAccountNumberResult result = new GetPersonByAccountNumberResult();
-        result = Mappers.personMapper(person, result);
+        result = mappers.personMapper(person, result);
 
         return result;
     }

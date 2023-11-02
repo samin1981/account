@@ -1,4 +1,4 @@
-package com.example.account;
+package com.example.account.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,7 +14,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
       auth.inMemoryAuthentication()
-              .withUser("sa")
+              .withUser("samin")
               .password(passwordEncoder().encode("samin"))
               .authorities("ADMIN");
     }

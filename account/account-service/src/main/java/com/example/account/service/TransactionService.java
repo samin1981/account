@@ -15,6 +15,7 @@ import com.example.account.domain.TransactionInfo;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,9 @@ public class TransactionService {
     private final PersonRepository personRepository;
     private final AccountInfoRepository accountInfoRepository;
 
+    @Autowired
+    private Mappers mappers;
+
     @Value("${open.account.sign}")
     private String openAccountSign;
 
@@ -45,7 +49,8 @@ public class TransactionService {
 
     public GetAllTransactionsResult getAllTransactions() {
         GetAllTransactionsResult result = new GetAllTransactionsResult();
-        List<TransactionResult> transactions = transactionRepository.findAll().stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
+        List<TransactionResult> transactions = transactionRepository.findAll().stream()
+                .map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
         }
@@ -58,7 +63,7 @@ public class TransactionService {
         GetTransactionsBySourceAccountNumberResult result = new GetTransactionsBySourceAccountNumberResult();
 
         List<TransactionResult> transactions = transactionRepository.findTransactionsBySourceAccountNumber(request.getAccountNumber())
-                .stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
+                .stream().map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, request.getAccountNumber());
@@ -72,7 +77,7 @@ public class TransactionService {
         GetTransactionsByDestAccountNumberResult result = new GetTransactionsByDestAccountNumberResult();
 
         List<TransactionResult> transactions = transactionRepository.findTransactionsByDestinationAccountNumber(request.getAccountNumber())
-                .stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
+                .stream().map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
@@ -85,7 +90,7 @@ public class TransactionService {
     public GetTransactionsByTransferDateResult getTransactionsByTransferDate(GetTransactionsByTransferDateRequest request) {
         GetTransactionsByTransferDateResult result = new GetTransactionsByTransferDateResult();
         List<TransactionResult> transactions = transactionRepository.findTransactionsByTransferDate(request.getTransferDate())
-                .stream().map(Mappers::transactionsMapper).collect(Collectors.toList());
+                .stream().map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
