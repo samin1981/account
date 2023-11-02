@@ -12,10 +12,12 @@ import org.springframework.context.annotation.Configuration;
 public class LogAspect {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Around("execution(* com.example.account.api.impl.AccWS..*(..))")
-    public void around(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
-        joinPoint.proceed();
+        Object object = joinPoint.proceed();
         long timeTaken = System.currentTimeMillis() - startTime;
         logger.info("Time Taken by {} is {}", joinPoint, timeTaken);
+
+        return object;
     }
 }
