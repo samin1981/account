@@ -1,17 +1,15 @@
 package com.example.account.service;
 
-import com.example.account.comon.AccountErrorsStatic;
-import com.example.account.comon.AccountException;
-import com.example.account.helper.Mappers;
-import com.example.account.api.transaction.GetTransactionsByTransferDateRequest;
-import com.example.account.api.transaction.GetTransactionsByTransferDateResult;
 import com.example.account.api.transaction.*;
 import com.example.account.builder.TransactionBuilder;
+import com.example.account.comon.AccountErrorsStatic;
+import com.example.account.comon.AccountException;
 import com.example.account.comon.UtilAccount;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
 import com.example.account.domain.TransactionInfo;
+import com.example.account.helper.Mappers;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
