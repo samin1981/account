@@ -34,11 +34,11 @@
         </dependency>
         <!-- -->
         <!--H2 -->
-        <!--<dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
-        </dependency>-->
+        </dependency>
         <!-- -->
         <dependency>
             <groupId>com.example</groupId>
@@ -52,6 +52,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-spring-boot</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
