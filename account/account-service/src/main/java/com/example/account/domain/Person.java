@@ -33,6 +33,14 @@ public class Person {
     @Version
     private Timestamp version;
 
+    public Person() {}
+
+    public Person(Integer id, String personName, String nationalCode, int i) {
+        this.id = id;
+        this.personName = personName;
+        this.nationalCode = nationalCode;
+    }
+
     public Integer getId() {
         return id;
     }
