@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "person")
+@Table(name = "person", uniqueConstraints = {@UniqueConstraint(name = "UK_PERSON_NATIONAL_CODE", columnNames = {"nationalCode"})})
 public class Person {
     @Id
     @Column(name = "id")

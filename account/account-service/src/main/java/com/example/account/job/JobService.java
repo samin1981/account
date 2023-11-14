@@ -15,7 +15,6 @@ public class JobService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final PersonService personService;
     public JobService(PersonService personService) {
-
         this.personService = personService;
     }
     @Scheduled(cron = "${scheduling.debt.peyment.duedate.job.cron}")
