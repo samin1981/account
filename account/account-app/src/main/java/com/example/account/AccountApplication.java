@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaRepositories("com.example.account.repository")
 @EnableScheduling
 public class AccountApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(AccountApplication.class, args);
 	}
