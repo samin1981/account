@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -90,5 +91,13 @@ public class PersonService {
         return result;
     }
 
+    public void getDebtors(Date date) {
+        List<String> persons = personRepository.getDebtors(date);
+        sendSms(persons);
+    }
+
+    private void sendSms(List<String> persons) {
+        System.out.println("sms....");
+    }
 
 }

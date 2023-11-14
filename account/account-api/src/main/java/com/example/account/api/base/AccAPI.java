@@ -66,7 +66,4 @@ public interface AccAPI {
 
     @PostMapping(value = "/facility/getFacility", produces = MediaType.APPLICATION_JSON)
     GetFacilityResult getFacility(@Valid @RequestBody GetFacilityRequest request);
-
-    @PostMapping(value = "/getIndex", produces = MediaType.APPLICATION_JSON)
-    String getIndex();
 }

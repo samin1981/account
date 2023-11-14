@@ -6,16 +6,12 @@ import com.example.account.api.facility.ConditionForFacilityRequest;
 import com.example.account.api.facility.ConditionForFacilityResult;
 import com.example.account.api.facility.GetFacilityRequest;
 import com.example.account.api.facility.GetFacilityResult;
-import com.example.account.api.transaction.GetTransactionsByTransferDateRequest;
-import com.example.account.api.transaction.GetTransactionsByTransferDateResult;
 import com.example.account.api.person.*;
 import com.example.account.api.transaction.*;
 import com.example.account.service.AccountInfoService;
 import com.example.account.service.FacilityService;
 import com.example.account.service.PersonService;
 import com.example.account.service.TransactionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -115,16 +111,5 @@ public class AccWS extends BaseWS implements AccAPI {
     @Override
     public GetFacilityResult getFacility(GetFacilityRequest request) {
         return facilityService.getFacility(request);
-    }
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Override
-    public String getIndex() {
-        logger.debug("getIndex + debug message");
-        logger.trace("getIndex + trace message");
-        logger.info("getIndex + info message");
-        logger.warn("getIndex + warn message");
-        logger.error("getIndex + error message");
-
-        return null;
     }
 }

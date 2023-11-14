@@ -38,8 +38,21 @@ public class UtilAccount {
     }
 
     public static Date firstOfNextMonth() {
+        Calendar today = Calendar.getInstance();
+        Calendar next = Calendar.getInstance();
+
+        next.set(Calendar.YEAR, today.get(Calendar.YEAR));
+        next.set(Calendar.MONTH, today.get(Calendar.MONTH)+ 1);
+        next.set(Calendar.DAY_OF_MONTH, 1);
+
+        return  next.getTime();
+    }
+
+    public static Date getLastPaymentDate(int numberOfMonths) {
         Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, numberOfMonths);
         cal.set(Calendar.DAY_OF_MONTH, 1);
+
         return cal.getTime();
     }
 
@@ -49,12 +62,6 @@ public class UtilAccount {
 
     public static float getPaymentAmount(float amountForReturn, float numberOfMonth) {
         return amountForReturn / numberOfMonth;
-    }
-
-    public static Date getLastPaymentDate(int numberOfMonths) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, numberOfMonths);
-        return cal.getTime();
     }
 
     public static float getLateFineAmountForOneDay(float amountForReturn, float yearlyFinePercent) {

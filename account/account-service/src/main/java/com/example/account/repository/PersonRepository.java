@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +24,8 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     @Modifying
     @Query("update Person person set person.deleted = 1 where person.id = :id")
     void removePersonById(Integer id);
+
+    @Query("select person.nationalCode from Person person join person.facility facility where " +
+            "person.deleted != 1 and facility.amountForReturn != 0 and facility.creditDate < :today")
+    List<String> getDebtors(Date today);
 }

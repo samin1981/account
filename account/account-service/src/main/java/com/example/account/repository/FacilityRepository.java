@@ -5,6 +5,8 @@ import com.example.account.domain.FacilityInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public interface FacilityRepository extends JpaRepository<Facility, Integer> {
