@@ -15,7 +15,7 @@ public class Person {
 
     private String personName;
 
-    @NotNull
+    @Column(nullable = false)
     private String nationalCode;
 
     private String phoneNumber;
