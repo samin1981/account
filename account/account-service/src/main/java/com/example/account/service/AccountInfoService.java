@@ -5,6 +5,7 @@ import com.example.account.builder.AccountInfoBuilder;
 import com.example.account.builder.TransactionBuilder;
 import com.example.account.comon.AccountErrorsStatic;
 import com.example.account.comon.AccountException;
+import com.example.account.comon.RequestContext;
 import com.example.account.comon.UtilAccount;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Throwable.class)
 public class AccountInfoService {
     private static final Logger logger = LogManager.getLogger(AccountInfoService.class);
+    private final RequestContext requestContext;
     private final AccountInfoRepository accountInfoRepository;
     private final PersonRepository personRepository;
     private final TransactionRepository transactionRepository;
@@ -42,9 +44,11 @@ public class AccountInfoService {
     @Value("${amount.for.open.account}")
     private BigDecimal amountForOpenAccount;
 
-    public AccountInfoService(AccountInfoRepository accountInfoRepository,
+    public AccountInfoService(RequestContext requestContext,
+                              AccountInfoRepository accountInfoRepository,
                               PersonRepository personRepository,
                               TransactionRepository transactionRepository) {
+        this.requestContext = requestContext;
         this.accountInfoRepository = accountInfoRepository;
         this.personRepository = personRepository;
         this.transactionRepository = transactionRepository;
@@ -97,6 +101,7 @@ public class AccountInfoService {
                 .balance(request.getAmount())
                 .transferTypeCode(TransferType.DEPOSIT.code)
                 .withdrawable(request.getWithdrawable() ? 1 : 0)
+                .userName(requestContext.getUsername())
                 .build();
 
         accountInfoRepository.save(accountInfo);

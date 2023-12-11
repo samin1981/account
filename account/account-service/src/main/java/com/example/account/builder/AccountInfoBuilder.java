@@ -10,6 +10,7 @@ public class AccountInfoBuilder {
     private BigDecimal amount;
     private Integer transferTypeCode;
     private Integer withdrawable;
+    private String userName;
 
     private AccountInfoBuilder() {
     }
@@ -41,6 +42,11 @@ public class AccountInfoBuilder {
         this.withdrawable = withdrawable;
         return this;
     }
+
+    public AccountInfoBuilder userName(String userName) {
+        this.userName = userName;
+        return this;
+    }
     public AccountInfo build() {
         AccountInfo accountInfo = new AccountInfo();
         accountInfo.setAccountNumber(accountNumber);
@@ -48,6 +54,7 @@ public class AccountInfoBuilder {
         accountInfo.setAmount(amount);
         accountInfo.setTransferTypeCode(transferTypeCode);
         accountInfo.setWithdrawable(withdrawable);
+        accountInfo.setUserName(userName);
 
         return accountInfo;
     }
