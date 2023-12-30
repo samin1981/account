@@ -3,7 +3,6 @@ package com.example.account.api.transaction;
 public enum TransactionType {
     INTERNAL(0),
     CASH(1);
-
     public final int code;
 
     TransactionType(int code) {

@@ -1,18 +1,15 @@
 package com.example.account.api.account;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class GetAllAccountInfosResult {
     private List<GetAccountInfoDetailResult> items = new ArrayList<>();
-
-    public List<GetAccountInfoDetailResult> getItems() {
-        return items;
-    }
-
-    public void setItems(List<GetAccountInfoDetailResult> items) {
-        this.items = items;
-    }
 
     @Override
     public String toString() {

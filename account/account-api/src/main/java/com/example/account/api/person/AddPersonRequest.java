@@ -1,11 +1,15 @@
 package com.example.account.api.person;
 
 import com.example.account.comon.UtilAccount;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.StringJoiner;
 
+@Getter
+@Setter
 public class AddPersonRequest {
     private String personName;
     @NotNull
@@ -14,30 +18,6 @@ public class AddPersonRequest {
 
     @Pattern(regexp = "\\d{11}")
     private String phoneNumber;
-
-    public String getPersonName() {
-        return personName;
-    }
-
-    public void setPersonName(String personName) {
-        this.personName = personName;
-    }
-
-    public String getNationalCode() {
-        return nationalCode;
-    }
-
-    public void setNationalCode(String nationalCode) {
-        this.nationalCode = nationalCode;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
     @Override
     public String toString() {

@@ -5,11 +5,10 @@ import com.example.account.builder.PersonBuilder;
 import com.example.account.comon.AccountErrorsStatic;
 import com.example.account.comon.AccountException;
 import com.example.account.domain.Person;
-import com.example.account.helper.Mappers;
+import com.example.account.helper.AccountMapper;
 import com.example.account.repository.PersonRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,22 +21,20 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Throwable.class)
 public class PersonService {
     private static final Logger logger = LogManager.getLogger(PersonService.class);
-
-    @Autowired
     private final PersonRepository personRepository;
+    private final AccountMapper accountMapper;
 
-    @Autowired
-    private Mappers mappers;
-
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository,
+                         AccountMapper accountMapper) {
         this.personRepository = personRepository;
+        this.accountMapper = accountMapper;
     }
 
     public GetAllPersonsResult getAllPersons() {
         GetAllPersonsResult result = new GetAllPersonsResult();
 
         List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAllByDeleted().stream()
-                .map(person -> mappers.personsMapper(person)).collect(Collectors.toList());
+                .map(person -> accountMapper.personDetailMap(person)).collect(Collectors.toList());
         if (persons.isEmpty() && persons.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, null);
         }
@@ -49,10 +46,7 @@ public class PersonService {
         Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
                 .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
 
-        GetPersonByNationalCodeResult result = new GetPersonByNationalCodeResult();
-        result = mappers.personMapper(existPerson, result);
-
-        return result;
+        return accountMapper.personByNationalCodeMap(existPerson);
     }
 
     public void addPerson(AddPersonRequest request) {
@@ -85,10 +79,7 @@ public class PersonService {
         if (person == null) {
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, request.getAccountNumber());
         }
-        GetPersonByAccountNumberResult result = new GetPersonByAccountNumberResult();
-        result = mappers.personMapper(person, result);
-
-        return result;
+        return accountMapper.personByAccountNumberMap(person);
     }
 
     public void getDebtors(Date date) {

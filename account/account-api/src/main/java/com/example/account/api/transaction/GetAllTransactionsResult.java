@@ -1,19 +1,16 @@
 package com.example.account.api.transaction;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+@Getter
+@Setter
 public class GetAllTransactionsResult {
     private List<TransactionResult> items = new ArrayList<>();
-
-    public List<TransactionResult> getItems() {
-        return items;
-    }
-
-    public void setItems(List<TransactionResult> items) {
-        this.items = items;
-    }
 
     @Override
     public String toString() {

@@ -1,34 +1,14 @@
 package com.example.account.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Profile;
 
 @Profile("prod")
+@Getter
+@Setter
 public class BatchFilePerson {
     private Integer id;
     private String personName;
     private String nationalCode;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getPersonName() {
-        return personName;
-    }
-
-    public void setPersonName(String personName) {
-        this.personName = personName;
-    }
-
-    public String getNationalCode() {
-        return nationalCode;
-    }
-
-    public void setNationalCode(String nationalCode) {
-        this.nationalCode = nationalCode;
-    }
 }

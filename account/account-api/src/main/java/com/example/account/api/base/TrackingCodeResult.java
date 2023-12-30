@@ -1,17 +1,14 @@
 package com.example.account.api.base;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.StringJoiner;
 
+@Getter
+@Setter
 public class TrackingCodeResult {
     private String trackingCode;
-
-    public String getTrackingCode() {
-        return trackingCode;
-    }
-
-    public void setTrackingCode(String trackingCode) {
-        this.trackingCode = trackingCode;
-    }
 
     @Override
     public String toString() {

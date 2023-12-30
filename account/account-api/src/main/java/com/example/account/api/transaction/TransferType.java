@@ -3,7 +3,6 @@ package com.example.account.api.transaction;
 public enum TransferType {
     DEPOSIT(0),
     WITHDRAW(1);
-
     public final int code;
 
     TransferType(int code) {

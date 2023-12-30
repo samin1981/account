@@ -23,11 +23,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder().encode("admin")).authorities("ADMIN")
+                .withUser("admin")
+                .password(passwordEncoder().encode("admin"))
+                .authorities("ADMIN")
                 .and()
-                .withUser("samin").password(passwordEncoder().encode("samin")).authorities("ACCOUNT", "TRANSACTION")
+                .withUser("samin")
+                .password(passwordEncoder().encode("samin"))
+                .authorities("ACCOUNT", "TRANSACTION")
                 .and()
-                .withUser("farzane").password(passwordEncoder().encode("farzane")).authorities("FACILITY", "PERSON");
+                .withUser("farzane")
+                .password(passwordEncoder().encode("farzane"))
+                .authorities("FACILITY", "PERSON");
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
