@@ -1,17 +1,13 @@
 package com.example.account.api.base;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class SuccessfulResult {
     private boolean successful;
-
     public SuccessfulResult(boolean successful) {
-        this.successful = successful;
-    }
-
-    public boolean isSuccessful() {
-        return successful;
-    }
-
-    public void setSuccessful(boolean successful) {
         this.successful = successful;
     }
 

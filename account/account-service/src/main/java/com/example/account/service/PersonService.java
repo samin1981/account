@@ -5,11 +5,11 @@ import com.example.account.builder.PersonBuilder;
 import com.example.account.comon.AccountErrorsStatic;
 import com.example.account.comon.AccountException;
 import com.example.account.domain.Person;
+import com.example.account.helper.AccountMapper;
 import com.example.account.helper.Mappers;
 import com.example.account.repository.PersonRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,22 +22,23 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Throwable.class)
 public class PersonService {
     private static final Logger logger = LogManager.getLogger(PersonService.class);
-
-    @Autowired
     private final PersonRepository personRepository;
+    private final Mappers mappers;
+    private final AccountMapper accountMapper;
 
-    @Autowired
-    private Mappers mappers;
-
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository
+                        , Mappers mappers,
+                         AccountMapper accountMapper) {
         this.personRepository = personRepository;
+        this.mappers = mappers;
+        this.accountMapper = accountMapper;
     }
 
     public GetAllPersonsResult getAllPersons() {
         GetAllPersonsResult result = new GetAllPersonsResult();
 
         List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAllByDeleted().stream()
-                .map(person -> mappers.personsMapper(person)).collect(Collectors.toList());
+                .map(person -> accountMapper.personsMapper(person)).collect(Collectors.toList());
         if (persons.isEmpty() && persons.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, null);
         }

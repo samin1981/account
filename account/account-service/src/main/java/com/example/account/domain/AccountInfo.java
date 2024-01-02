@@ -23,6 +23,8 @@ public class AccountInfo {
 
     private Integer withdrawable;
 
+    private String userName;
+
     @Version
     private Timestamp version;
 
@@ -72,5 +74,13 @@ public class AccountInfo {
 
     public void setWithdrawable(Integer withdrawable) {
         this.withdrawable = withdrawable;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

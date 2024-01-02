@@ -16,7 +16,6 @@ import java.util.function.Function;
 
 @Component
 public class Mappers {
-
     public GetPersonDetailResult personsMapper(Person person) {
         GetPersonDetailResult result = new GetPersonDetailResult();
         result = this.personMapper(person, result);
@@ -86,7 +85,7 @@ public class Mappers {
             return m;
         };
 
-      return function.apply(k);
+        return function.apply(k);
     }
 
 }

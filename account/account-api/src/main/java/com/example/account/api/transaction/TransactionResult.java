@@ -1,11 +1,15 @@
 package com.example.account.api.transaction;
 
 import com.example.account.comon.UtilAccount;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.StringJoiner;
 
+@Getter
+@Setter
 public class TransactionResult {
     private Integer id;
     private String sourceAccountNumber;
@@ -17,86 +21,6 @@ public class TransactionResult {
     private String trackingCode;
     private TransactionType transactionType;
     private TransferType srcTransferType;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSourceAccountNumber() {
-        return sourceAccountNumber;
-    }
-
-    public void setSourceAccountNumber(String sourceAccountNumber) {
-        this.sourceAccountNumber = sourceAccountNumber;
-    }
-
-    public String getDestinationAccountNumber() {
-        return destinationAccountNumber;
-    }
-
-    public void setDestinationAccountNumber(String destinationAccountNumber) {
-        this.destinationAccountNumber = destinationAccountNumber;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public BigDecimal getSrcBalance() {
-        return srcBalance;
-    }
-
-    public void setSrcBalance(BigDecimal srcBalance) {
-        this.srcBalance = srcBalance;
-    }
-
-    public BigDecimal getDestBalance() {
-        return destBalance;
-    }
-
-    public void setDestBalance(BigDecimal destBalance) {
-        this.destBalance = destBalance;
-    }
-
-    public Date getTransferDate() {
-        return transferDate;
-    }
-
-    public void setTransferDate(Date transferDate) {
-        this.transferDate = transferDate;
-    }
-
-    public String getTrackingCode() {
-        return trackingCode;
-    }
-
-    public void setTrackingCode(String trackingCode) {
-        this.trackingCode = trackingCode;
-    }
-
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public TransferType getSrcTransferType() {
-        return srcTransferType;
-    }
-
-    public void setSrcTransferType(TransferType srcTransferType) {
-        this.srcTransferType = srcTransferType;
-    }
 
     @Override
     public String toString() {
