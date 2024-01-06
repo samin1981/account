@@ -6,7 +6,6 @@ import com.example.account.comon.AccountErrorsStatic;
 import com.example.account.comon.AccountException;
 import com.example.account.domain.Person;
 import com.example.account.helper.AccountMapper;
-import com.example.account.helper.Mappers;
 import com.example.account.repository.PersonRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,14 +22,11 @@ import java.util.stream.Collectors;
 public class PersonService {
     private static final Logger logger = LogManager.getLogger(PersonService.class);
     private final PersonRepository personRepository;
-    private final Mappers mappers;
     private final AccountMapper accountMapper;
 
-    public PersonService(PersonRepository personRepository
-                        , Mappers mappers,
+    public PersonService(PersonRepository personRepository,
                          AccountMapper accountMapper) {
         this.personRepository = personRepository;
-        this.mappers = mappers;
         this.accountMapper = accountMapper;
     }
 
@@ -38,8 +34,9 @@ public class PersonService {
         GetAllPersonsResult result = new GetAllPersonsResult();
 
         List<com.example.account.api.person.GetPersonDetailResult> persons = personRepository.findAllByDeleted().stream()
-                .map(person -> accountMapper.personsMapper(person)).collect(Collectors.toList());
+                .map(person -> accountMapper.personsMapperForPersonDetail(person)).collect(Collectors.toList());
         if (persons.isEmpty() && persons.size() == 0) {
+            logger.error("Person not found");
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, null);
         }
         result.setItems(persons);
@@ -48,17 +45,20 @@ public class PersonService {
 
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
         Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
-                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
+                .orElseThrow(() ->
+                {
+                    logger.error("Person with national code {0} not found" , request.getNationalCode());
+                    new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
+                    return null;
+                });
 
-        GetPersonByNationalCodeResult result = new GetPersonByNationalCodeResult();
-        result = mappers.personMapper(existPerson, result);
-
-        return result;
+        return accountMapper.personsMapperForPersonByNationalCode(existPerson);
     }
 
     public void addPerson(AddPersonRequest request) {
         Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
         if (person.isPresent()) {
+            logger.error("This person exist");
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_EXIST, request.getNationalCode());
         }
 
@@ -71,6 +71,7 @@ public class PersonService {
                 .build();
 
         personRepository.save(newPerson);
+        logger.info("New person with national code {0} created" , request.getNationalCode());
     }
 
     public void removePersonByNationalCode(RemovePersonByNationalCodeRequest request) {
@@ -79,17 +80,17 @@ public class PersonService {
 
         personRepository.removePersonById(existPerson.getId());
         personRepository.save(existPerson);
+        logger.info("person {0} was deleted" , existPerson.getNationalCode());
     }
 
     public GetPersonByAccountNumberResult getPersonByAccountNumber(GetPersonByAccountNumberRequest request) {
         Person person = personRepository.findPersonByAccountInfo(request.getAccountNumber());
         if (person == null) {
+            logger.info("Person with account number {0} not found", request.getAccountNumber());
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, request.getAccountNumber());
         }
-        GetPersonByAccountNumberResult result = new GetPersonByAccountNumberResult();
-        result = mappers.personMapper(person, result);
 
-        return result;
+        return accountMapper.personMapperForPersonByAccountNumber(person);
     }
 
     public void getDebtors(Date date) {

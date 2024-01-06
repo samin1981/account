@@ -9,7 +9,7 @@ import java.util.StringJoiner;
 
 @Getter
 @Setter
-public abstract class PersonResult {
+public class PersonResult {
     private Integer id;
     private String personName;
     private String nationalCode;

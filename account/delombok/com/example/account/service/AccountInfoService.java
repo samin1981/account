@@ -9,12 +9,13 @@ import com.example.account.comon.UtilAccount;
 import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
-import com.example.account.helper.AccountMapper;
+import com.example.account.helper.Mappers;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,9 @@ public class AccountInfoService {
     private final AccountInfoRepository accountInfoRepository;
     private final PersonRepository personRepository;
     private final TransactionRepository transactionRepository;
-    private final AccountMapper accountMapper;
+
+    @Autowired
+    private Mappers mappers;
 
     @Value("${open.account.sign}")
     private String openAccountSign;
@@ -41,19 +44,17 @@ public class AccountInfoService {
 
     public AccountInfoService(AccountInfoRepository accountInfoRepository,
                               PersonRepository personRepository,
-                              TransactionRepository transactionRepository,
-                              AccountMapper accountMapper) {
+                              TransactionRepository transactionRepository) {
         this.accountInfoRepository = accountInfoRepository;
         this.personRepository = personRepository;
         this.transactionRepository = transactionRepository;
-        this.accountMapper = accountMapper;
     }
 
     public GetAllAccountInfosResult getAllAccountInfos() {
 
         GetAllAccountInfosResult result = new GetAllAccountInfosResult();
         List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream()
-                .map(accountInfo -> accountMapper.accountInfosMapperForAccountInfoDetail(accountInfo)).collect(Collectors.toList());
+                .map(accountInfo -> mappers.accountInfosMapper(accountInfo)).collect(Collectors.toList());
         if (accountInfos.isEmpty() && accountInfos.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, null);
         }
@@ -63,13 +64,15 @@ public class AccountInfoService {
     }
 
     public GetAccountInfoByAccountNumberResult getAccountInfoByAccountNumber(GetAccountInfoByAccountNumberRequest request) {
-
         AccountInfo accountInfo = accountInfoRepository.findAccountInfoByAccountNumber(request.getAccountNumber());
         if (accountInfo == null) {
             throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, request.getAccountNumber());
         }
-//        GetAccountInfoByAccountNumberResult result = accountMapper.accountInfosMapperForAccountInfoByAccountNumber(accountInfo);
-        return null;
+
+        GetAccountInfoByAccountNumberResult result = new GetAccountInfoByAccountNumberResult();
+        result = mappers.accountInfoMapper(accountInfo, result);
+
+        return result;
     }
 
     public OpenAnAccountResult openAnAccount(OpenAnAccountRequest request) {
