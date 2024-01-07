@@ -15,6 +15,7 @@ import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +69,18 @@ public class AccountInfoService {
         if (accountInfo == null) {
             throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, request.getAccountNumber());
         }
-//        GetAccountInfoByAccountNumberResult result = accountMapper.accountInfosMapperForAccountInfoByAccountNumber(accountInfo);
-        return null;
+        return accountInfosMapperForAccountInfoByAccountNumber(accountInfo);
+    }
+
+    private GetAccountInfoByAccountNumberResult accountInfosMapperForAccountInfoByAccountNumber(AccountInfo accountInfo) {
+        GetAccountInfoByAccountNumberResult result = new GetAccountInfoByAccountNumberResult();
+        result.setId(accountInfo.getId());
+        result.setAccountNumber(accountInfo.getAccountNumber());
+        result.setAmount(accountInfo.getAmount());
+        result.setBalance(accountInfo.getBalance());
+        result.setTransferType(com.example.account.api.transaction.TransferType.valueOfCode(accountInfo.getTransferTypeCode()));
+
+        return result;
     }
 
     public OpenAnAccountResult openAnAccount(OpenAnAccountRequest request) {

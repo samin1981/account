@@ -9,11 +9,10 @@ import com.example.account.domain.AccountInfo;
 import com.example.account.domain.Person;
 import com.example.account.domain.Transaction;
 import com.example.account.domain.TransactionInfo;
-import com.example.account.helper.Mappers;
+import com.example.account.helper.AccountMapper;
 import com.example.account.repository.AccountInfoRepository;
 import com.example.account.repository.PersonRepository;
 import com.example.account.repository.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,26 +27,26 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final PersonRepository personRepository;
     private final AccountInfoRepository accountInfoRepository;
-
-    @Autowired
-    private Mappers mappers;
+    private final AccountMapper accountMapper;
 
     @Value("${open.account.sign}")
     private String openAccountSign;
 
     public TransactionService(TransactionRepository transactionRepository,
                               PersonRepository personRepository,
-                              AccountInfoRepository accountInfoRepository) {
+                              AccountInfoRepository accountInfoRepository,
+                              AccountMapper accountMapper) {
 
         this.transactionRepository = transactionRepository;
         this.personRepository = personRepository;
         this.accountInfoRepository = accountInfoRepository;
+        this.accountMapper = accountMapper;
     }
 
     public GetAllTransactionsResult getAllTransactions() {
         GetAllTransactionsResult result = new GetAllTransactionsResult();
         List<TransactionResult> transactions = transactionRepository.findAll().stream()
-                .map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
+                .map(transaction -> accountMapper.transactionsMapper(transaction)).collect(Collectors.toList());
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
         }
@@ -60,7 +59,7 @@ public class TransactionService {
         GetTransactionsBySourceAccountNumberResult result = new GetTransactionsBySourceAccountNumberResult();
 
         List<TransactionResult> transactions = transactionRepository.findTransactionsBySourceAccountNumber(request.getAccountNumber())
-                .stream().map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
+                .stream().map(transaction -> accountMapper.transactionsMapper(transaction)).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, request.getAccountNumber());
@@ -74,7 +73,7 @@ public class TransactionService {
         GetTransactionsByDestAccountNumberResult result = new GetTransactionsByDestAccountNumberResult();
 
         List<TransactionResult> transactions = transactionRepository.findTransactionsByDestinationAccountNumber(request.getAccountNumber())
-                .stream().map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
+                .stream().map(transaction -> accountMapper.transactionsMapper(transaction)).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
@@ -87,7 +86,7 @@ public class TransactionService {
     public GetTransactionsByTransferDateResult getTransactionsByTransferDate(GetTransactionsByTransferDateRequest request) {
         GetTransactionsByTransferDateResult result = new GetTransactionsByTransferDateResult();
         List<TransactionResult> transactions = transactionRepository.findTransactionsByTransferDate(request.getTransferDate())
-                .stream().map(transaction -> mappers.transactionsMapper(transaction)).collect(Collectors.toList());
+                .stream().map(transaction -> accountMapper.transactionsMapper(transaction)).collect(Collectors.toList());
 
         if (transactions.isEmpty() && transactions.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_TRANSACTION_NOT_FOUND, null);
@@ -96,7 +95,6 @@ public class TransactionService {
 
         return result;
     }
-
 
     public InternalTransferResult internalTransfer(InternalTransferRequest request) {
         InternalTransferResult result = new InternalTransferResult();
