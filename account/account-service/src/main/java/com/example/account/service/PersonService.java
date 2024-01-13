@@ -45,12 +45,7 @@ public class PersonService {
 
     public GetPersonByNationalCodeResult getPersonByNationalCode(GetPersonByNationalCodeRequest request) {
         Person existPerson = personRepository.findPersonByNationalCode(request.getNationalCode())
-                .orElseThrow(() ->
-                {
-                    logger.error("Person with national code {0} not found" , request.getNationalCode());
-                    new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode());
-                    return null;
-                });
+                .orElseThrow(() -> new AccountException(AccountErrorsStatic.ERROR_PERSON_NOT_FOUND, request.getNationalCode()));
 
         return accountMapper.personsMapperForPersonByNationalCode(existPerson);
     }
@@ -58,7 +53,7 @@ public class PersonService {
     public void addPerson(AddPersonRequest request) {
         Optional person = personRepository.findPersonByNationalCode(request.getNationalCode());
         if (person.isPresent()) {
-            logger.error("This person exist");
+            logger.error("Person with national code {} exists.", request.getNationalCode());
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_EXIST, request.getNationalCode());
         }
 
@@ -71,7 +66,7 @@ public class PersonService {
                 .build();
 
         personRepository.save(newPerson);
-        logger.info("New person with national code {0} created" , request.getNationalCode());
+        logger.info("New person with national code {} created" , request.getNationalCode());
     }
 
     public void removePersonByNationalCode(RemovePersonByNationalCodeRequest request) {
@@ -86,7 +81,7 @@ public class PersonService {
     public GetPersonByAccountNumberResult getPersonByAccountNumber(GetPersonByAccountNumberRequest request) {
         Person person = personRepository.findPersonByAccountInfo(request.getAccountNumber());
         if (person == null) {
-            logger.info("Person with account number {0} not found", request.getAccountNumber());
+            logger.info("Person with account number {} not found", request.getAccountNumber());
             throw new AccountException(AccountErrorsStatic.ERROR_PERSON_WITH_ACCOUNT_NUMBER_NOT_FOUND, request.getAccountNumber());
         }
 

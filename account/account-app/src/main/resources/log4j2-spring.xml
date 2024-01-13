@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
+    <properties>
+            <Property name="LOG_DIR">logs</Property>
+    </properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
@@ -7,8 +10,8 @@
         </Console>
 
         <RollingFile name="RollingInfoFile"
-                     fileName="./logs/account-info.log"
-                     filePattern="./logs/$${date:yyyy-MM}/spring-boot-logger-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz"
+                     fileName="${LOG_DIR}/account-info.log"
+                     filePattern="${LOG_DIR}/$${date:yyyy-MM}/account-info-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz"
                      ignoreExceptions="false">
             <PatternLayout>
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -22,8 +25,8 @@
             </Policies>
         </RollingFile>
         <RollingFile name="RollingErrorFile"
-                     fileName="./logs/account-error.log"
-                     filePattern="./logs/$${date:yyyy-MM}/spring-boot-logger-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz"
+                     fileName="${LOG_DIR}/account-error.log"
+                     filePattern="${LOG_DIR}/$${date:yyyy-MM}/account-error-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz"
                      ignoreExceptions="false">
             <PatternLayout>
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>
@@ -36,16 +39,51 @@
                 <TimeBasedTriggeringPolicy />
             </Policies>
         </RollingFile>
+        <RollingFile name="RollingDebugFile"
+                     fileName="${LOG_DIR}/account-debug.log"
+                     filePattern="${LOG_DIR}/$${date:yyyy-MM}/account-debug-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="RollingTraceFile"
+                     fileName="${LOG_DIR}/account-trace.log"
+                     filePattern="${LOG_DIR}/$${date:yyyy-MM}/account-trace-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+        <Async name="ASYNCAppender">
+            <AppenderRef ref="RollingInfoFile" level="info"/>
+            <AppenderRef ref="RollingErrorFile" level="error"/>
+            <AppenderRef ref="RollingDebugFile" level="debug"/>
+            <AppenderRef ref="RollingTraceFile" level="trace"/>
+        </Async>
     </Appenders>
-
     <Loggers>
         <Root level="info">
-            <AppenderRef ref="RollingInfoFile" level="info"/>
             <AppenderRef ref="Console" />
+            <AppenderRef ref="ASYNCAppender" />
         </Root>
 
-        <!-- LOG "com.baeldung*" at TRACE level -->
-        <Logger name="com.baeldung" level="trace"></Logger>
+        <Logger name="org.hibernate.type" level="trace"></Logger>
+        <logger name="org.hibernate.SQL" level="debug"/>
     </Loggers>
 
 </Configuration>

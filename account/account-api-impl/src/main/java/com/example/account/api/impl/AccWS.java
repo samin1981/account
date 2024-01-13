@@ -64,7 +64,7 @@ public class AccWS extends BaseWS implements AccAPI {
     }
     @Override
     public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
-        return accountInfoService.getAllAccountInfos();
+        return accountInfoService.getAllAccountInfos(request);
     }
     @Override
     public GetAccountInfoByAccountNumberResult getAccountInfoByAccountNumber(GetAccountInfoByAccountNumberRequest request) {

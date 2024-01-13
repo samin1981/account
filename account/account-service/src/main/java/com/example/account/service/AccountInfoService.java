@@ -17,6 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,10 +52,11 @@ public class AccountInfoService {
         this.accountMapper = accountMapper;
     }
 
-    public GetAllAccountInfosResult getAllAccountInfos() {
+    public GetAllAccountInfosResult getAllAccountInfos(GetAllAccountInfosRequest request) {
 
         GetAllAccountInfosResult result = new GetAllAccountInfosResult();
-        List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAll().stream()
+        Pageable paging = PageRequest.of(request.getStartIndex(), request.getPageSize());
+        List<GetAccountInfoDetailResult> accountInfos = accountInfoRepository.findAllAccountInfos(paging).stream()
                 .map(accountInfo -> accountMapper.accountInfosMapperForAccountInfoDetail(accountInfo)).collect(Collectors.toList());
         if (accountInfos.isEmpty() && accountInfos.size() == 0) {
             throw new AccountException(AccountErrorsStatic.ERROR_ACCOUNT_INFO_NOT_FOUND, null);
