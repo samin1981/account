@@ -14,7 +14,7 @@ public class GetAllPersonsResult {
     @Override
     public String toString() {
         return new StringJoiner(", ", "[", "]")
-                .add("items=        " + items)
+                .add("items=        " + (items != null ? items.size() : 0))
                 .toString();
     }
 }

@@ -5,7 +5,6 @@ import com.example.account.api.base.SuccessfulResult;
 import java.util.StringJoiner;
 
 public class RemovePersonByNationalCodeResult extends SuccessfulResult {
-
     public RemovePersonByNationalCodeResult(boolean successful) {
         super(successful);
     }

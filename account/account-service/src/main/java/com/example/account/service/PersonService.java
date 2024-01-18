@@ -29,7 +29,6 @@ public class PersonService {
         this.personRepository = personRepository;
         this.accountMapper = accountMapper;
     }
-
     public GetAllPersonsResult getAllPersons() {
         GetAllPersonsResult result = new GetAllPersonsResult();
 

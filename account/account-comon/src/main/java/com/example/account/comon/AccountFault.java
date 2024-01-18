@@ -2,6 +2,7 @@ package com.example.account.comon;
 
 import java.io.Serializable;
 
+
 public class AccountFault implements Serializable {
     String code;
     Object[] params;
@@ -11,5 +12,13 @@ public class AccountFault implements Serializable {
         this.message = message;
         this.params = params;
         this.code = code;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

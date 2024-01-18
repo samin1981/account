@@ -8,7 +8,6 @@ public class AddPersonResult extends SuccessfulResult {
     public AddPersonResult(boolean successful) {
         super(successful);
     }
-
     @Override
     public String toString() {
         return new StringJoiner(", ", "[", "]")

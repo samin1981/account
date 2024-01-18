@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Getter
 @Setter
@@ -13,8 +14,8 @@ public class GetAllAccountInfosResult {
 
     @Override
     public String toString() {
-        return "GetAllAccountInfosResult{" +
-                "items=" + items +
-                '}';
+        return new StringJoiner(", ", "[", "]")
+                .add("items=        " + (items != null ? items.size() : 0))
+                .toString();
     }
 }

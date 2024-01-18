@@ -3,17 +3,18 @@ package com.example.account.api.transaction;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
 @Getter
 @Setter
 public class GetOpenAccountTransactionsResult {
-    private List<GetOpenAccountTransactionsResultItem> items;
+    private List<GetOpenAccountTransactionsResultItem> items = new ArrayList<>();
     @Override
     public String toString() {
         return new StringJoiner(", ", "[", "]")
-                .add("items=        " + items)
+                .add("items=        " + (items != null ? items.size() : 0))
                 .toString();
     }
 }
