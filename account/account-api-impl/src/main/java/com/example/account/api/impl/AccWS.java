@@ -12,8 +12,13 @@ import com.example.account.service.AccountInfoService;
 import com.example.account.service.FacilityService;
 import com.example.account.service.PersonService;
 import com.example.account.service.TransactionService;
+import net.sf.jasperreports.engine.JRException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/accApi")
@@ -111,5 +116,10 @@ public class AccWS extends BaseWS implements AccAPI {
     @Override
     public GetFacilityResult getFacility(GetFacilityRequest request) {
         return facilityService.getFacility(request);
+    }
+
+    public ResponseEntity<Void> getJasperReportForPersons(HttpServletResponse response) throws JRException, IOException {
+        personService.getJasperReportForPersons(response);
+        return ResponseEntity.ok().build();
     }
 }

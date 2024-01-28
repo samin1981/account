@@ -7,11 +7,16 @@ import com.example.account.api.facility.GetFacilityRequest;
 import com.example.account.api.facility.GetFacilityResult;
 import com.example.account.api.person.*;
 import com.example.account.api.transaction.*;
+import net.sf.jasperreports.engine.JRException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+
 public interface AccAPI {
     @PostMapping(value = "/person/getAllPersons", produces = MediaType.APPLICATION_JSON)
     GetAllPersonsResult getAllPersons(@Valid @RequestBody GetAllPersonsRequest request);
@@ -66,4 +71,7 @@ public interface AccAPI {
 
     @PostMapping(value = "/facility/getFacility", produces = MediaType.APPLICATION_JSON)
     GetFacilityResult getFacility(@Valid @RequestBody GetFacilityRequest request);
+
+    @PostMapping(value = "/report/getJasperReportForPersons", produces = MediaType.APPLICATION_JSON)
+    ResponseEntity<Void> getJasperReportForPersons(HttpServletResponse response) throws JRException, IOException;
 }

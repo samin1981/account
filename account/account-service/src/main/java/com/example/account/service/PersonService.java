@@ -7,20 +7,29 @@ import com.example.account.comon.AccountException;
 import com.example.account.domain.Person;
 import com.example.account.helper.AccountMapper;
 import com.example.account.repository.PersonRepository;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
 public class PersonService {
     private static final Logger logger = LogManager.getLogger(PersonService.class);
+    @Autowired
     private final PersonRepository personRepository;
     private final AccountMapper accountMapper;
 
@@ -29,6 +38,7 @@ public class PersonService {
         this.personRepository = personRepository;
         this.accountMapper = accountMapper;
     }
+
     public GetAllPersonsResult getAllPersons() {
         GetAllPersonsResult result = new GetAllPersonsResult();
 
@@ -65,7 +75,7 @@ public class PersonService {
                 .build();
 
         personRepository.save(newPerson);
-        logger.info("New person with national code {} created" , request.getNationalCode());
+        logger.info("New person with national code {} created", request.getNationalCode());
     }
 
     public void removePersonByNationalCode(RemovePersonByNationalCodeRequest request) {
@@ -74,7 +84,7 @@ public class PersonService {
 
         personRepository.removePersonById(existPerson.getId());
         personRepository.save(existPerson);
-        logger.info("person {0} was deleted" , existPerson.getNationalCode());
+        logger.info("person {0} was deleted", existPerson.getNationalCode());
     }
 
     public GetPersonByAccountNumberResult getPersonByAccountNumber(GetPersonByAccountNumberRequest request) {
@@ -94,6 +104,40 @@ public class PersonService {
 
     private void sendSms(List<String> persons) {
         System.out.println("sms....");
+    }
+
+    public void getJasperReportForPersons(HttpServletResponse response) throws JRException, IOException {
+
+        List<Person> persons = personRepository.findAllByDeleted();
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("firstParam", "این یک متن جهت تست است");
+
+        String filePath = "C:\\Myproject\\account\\account-service\\src\\main\\resources\\personReport.jrxml";
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(persons);
+
+        JasperReport report = JasperCompileManager.compileReport(filePath);
+        JasperPrint print = JasperFillManager.fillReport(report, parameters, dataSource);
+
+        //create pdf file
+        JasperExportManager.exportReportToPdfFile(print, "D:\\files\\personReport.pdf");
+        logger.info("Report Created.");
+
+        //create download file in swagger
+        JRXlsxExporter exporter = new JRXlsxExporter();
+        SimpleXlsxReportConfiguration reportConfigXLS = new SimpleXlsxReportConfiguration();
+        reportConfigXLS.setSheetNames(new String[]{"person report title"});
+        reportConfigXLS.setDetectCellType(true);
+        reportConfigXLS.setCollapseRowSpan(false);
+        exporter.setConfiguration(reportConfigXLS);
+        exporter.setExporterInput(new SimpleExporterInput(print));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
+        response.setHeader(
+                HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + "generatedFile" + ".xlsx;");
+        response.setContentType("application/octet-stream");
+        exporter.exportReport();
+        logger.info("Report Created.");
+
+
     }
 
 }
