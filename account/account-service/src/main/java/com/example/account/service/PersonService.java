@@ -7,6 +7,9 @@ import com.example.account.comon.AccountException;
 import com.example.account.domain.Person;
 import com.example.account.helper.AccountMapper;
 import com.example.account.repository.PersonRepository;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
@@ -24,6 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.twilio.example.Example.ACCOUNT_SID;
+import static com.twilio.example.Example.AUTH_TOKEN;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -98,12 +104,25 @@ public class PersonService {
     }
 
     public void getDebtors(Date date) {
-        List<String> persons = personRepository.getDebtors(date);
+        List<Person> persons = personRepository.getDebtors(date);
         sendSms(persons);
     }
 
-    private void sendSms(List<String> persons) {
-        System.out.println("sms....");
+    private void sendSms(List<Person> persons) {
+        persons.stream().map(c -> {
+//            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            Twilio.init("US24f5a5aaf1f06fad5bc7668abc79f229", "LZQFGWKPCCWN72EZXB1DSJLS");
+
+            com.twilio.rest.api.v2010.account.Message message = com.twilio.rest.api.v2010.account.Message
+                    .creator(
+                            new PhoneNumber("+12225559999"),
+                            new PhoneNumber("+989917142283"),
+                            "Sample Twilio SMS using Java")
+                    .create();
+            message.getBody();
+
+            return null;
+        }).collect(Collectors.toList());
     }
 
     public void getJasperReportForPersons(HttpServletResponse response) throws JRException, IOException {

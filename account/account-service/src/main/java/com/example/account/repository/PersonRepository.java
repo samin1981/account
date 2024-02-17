@@ -25,7 +25,7 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     @Query("update Person person set person.deleted = 1 where person.id = :id")
     void removePersonById(Integer id);
 
-    @Query("select person.nationalCode from Person person join person.facility facility where " +
+    @Query("select person from Person person join person.facility facility where " +
             "person.deleted != 1 and facility.amountForReturn != 0 and facility.creditDate < :today")
-    List<String> getDebtors(Date today);
+    List<Person> getDebtors(Date today);
 }
